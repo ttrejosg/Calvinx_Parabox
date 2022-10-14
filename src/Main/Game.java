@@ -1,7 +1,9 @@
 package Main;
 
+import Components.Player;
 import Components.Room;
 import Handlers.*;
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -14,10 +16,12 @@ public class Game implements Runnable{
     private boolean playing;
     private Thread gameThread;
     private ArrayList<Room> rooms;
+    private Player player;
 
     private final int FPS_SET = 120;
     private final int UPS_SET = 200;
-    private final boolean SHOW_FPS_UPS = true;
+    private final boolean SHOW_FPS_UPS = false;
+    private int steps = 0;
     
     /**
      * Constructor de la clase Game
@@ -36,6 +40,7 @@ public class Game implements Runnable{
         this.gWindow = new GameWindow(gPanel);
         this.playing = false;
         this.rooms = new ArrayList<>();
+        this.player = new Player(new Point(200, 200));
     }
     
     /**
@@ -44,7 +49,6 @@ public class Game implements Runnable{
     private void initComponents(){
         this.gWindow.requestFocus();
         this.gWindow.setVisible(true);
-        ImageHandler.loadImage();
     }
     
     /**
@@ -98,10 +102,50 @@ public class Game implements Runnable{
     }
     
     /**
-     * Método que zctualiza los componentes del juego
+     * Método que actualiza los componentes del juego
      */
     public void update(){
-        if(KeyHandler.KP_A) this.playing = false;
+        if(KeyHandler.KT_A) {
+            if(steps < 60){
+                this.player.setState(4);
+                this.player.getPosition().translate(-3, 0);
+                steps += 3;
+            } else {
+                steps = 0;
+                KeyHandler.KT_A = false;
+            }
+        }
+        else if(KeyHandler.KT_D){
+            if(steps < 60){
+                this.getPlayer().setState(2);
+                this.player.getPosition().translate(3, 0);
+                steps += 3;
+            } else {
+                steps = 0;
+                KeyHandler.KT_D = false;
+            }
+        }
+        else if(KeyHandler.KT_W ){
+            if(steps < 60){
+                this.getPlayer().setState(1);
+                this.player.getPosition().translate(0, -3);
+                steps += 3;
+            } else {
+                steps = 0;
+                KeyHandler.KT_W = false;
+            }
+        }
+        else if(KeyHandler.KT_S ){
+            if(steps < 60){
+                this.getPlayer().setState(3);
+                this.player.getPosition().translate(0, 3);
+                steps += 3;
+            } else {
+                steps = 0;
+                KeyHandler.KT_S = false;
+            }
+        }
+        else this.getPlayer().setState(0);
     }
 
     /**
@@ -172,5 +216,12 @@ public class Game implements Runnable{
      */
     public void setRooms(ArrayList<Room> rooms) {
         this.rooms = rooms;
+    }
+
+    /**
+     * @return the player
+     */
+    public Player getPlayer() {
+        return player;
     }
 }
