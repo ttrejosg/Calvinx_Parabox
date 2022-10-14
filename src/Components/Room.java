@@ -2,6 +2,8 @@ package Components;
 
 import java.awt.Graphics;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 /**
@@ -17,14 +19,14 @@ public class Room {
     private Player player;
     private boolean passed;
 
-    public Room(int id, File level) {
+    public Room(int id, File roomFile) {
         this.id = id;
         this.passed = false;
-        initLevel(level);
+        initRoom(roomFile);
     }
     
-    private void initLevel(File level){
-        
+    private void initRoom(File level){
+
     }
     
     private void update(){

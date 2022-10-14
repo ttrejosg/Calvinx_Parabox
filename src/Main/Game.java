@@ -4,6 +4,11 @@ import Components.Player;
 import Components.Room;
 import Handlers.*;
 import java.awt.Point;
+import static Handlers.Constants.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -15,51 +20,86 @@ public class Game implements Runnable{
     private GamePanel gPanel;
     private boolean playing;
     private Thread gameThread;
-    private ArrayList<Room> rooms;
-    private Player player;
+
+    private Room[] rooms;
+    private Room CurrentRoom;
 
     private final int FPS_SET = 120;
     private final int UPS_SET = 200;
-    private final boolean SHOW_FPS_UPS = false;
+    private final boolean SHOW_FPS_UPS = true;
     private int steps = 0;
-    
+
     /**
      * Constructor de la clase Game
      */
     public Game() {
         createComponents();
         initComponents();
-        initThread();
     }
-    
+
     /**
      * Método que crea todos los componentes de la clase
      */
     private void createComponents(){
+        this.gWindow = new GameWindow();
         this.gPanel = new GamePanel(this);
-        this.gWindow = new GameWindow(gPanel);
         this.playing = false;
-        this.rooms = new ArrayList<>();
-        this.player = new Player(new Point(200, 200));
     }
-    
+
     /**
      * Método que inicializa los componentes de la clase
      */
     private void initComponents(){
+
         this.gWindow.requestFocus();
+
+        LoadRooms();
+        initRoomSelectorActionListeners();
+
         this.gWindow.setVisible(true);
     }
-    
+
+    private void LoadRooms(){
+        File[] rooms = new File(ROOMS_PATH).listFiles();
+        this.rooms = new Room[rooms.length];
+        for(int i=0;i<rooms.length;i++){
+            this.rooms[i] = new Room(i+1,rooms[i]);
+        }
+    }
+
+    private void initRoomSelectorActionListeners(){
+        JButton[] roomButtons = this.gWindow.getRoomSelector().getRoomButtons();
+        for(int i=0;i<roomButtons.length;i++){
+            int finalI = i;
+            roomButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CurrentRoom = rooms[finalI];
+                    initGameThread();
+                }
+            });
+        }
+    }
+
     /**
      * Método que inicializa el GameLooop
      */
-    public void initThread(){
+    public void initGameThread(){
+        this.gWindow.getRoomSelector().setEnabled(false);
+        this.gWindow.getRoomSelector().setVisible(false);
+        this.gWindow.add(this.gPanel);
+        this.gPanel.setEnabled(true);
+        this.gPanel.setVisible(true);
+        this.gWindow.setFocusable(true);
+        this.gWindow.requestFocus();
         this.gameThread = new Thread(this);
         this.playing = true;
         this.gameThread.start();
     }
 
+    /**
+     * GameLoop que se ejecuta en el GameThread y establece los FPS y UPS
+     */
     @Override
     public void run() {
         double timePerFrame = 1000000000.0 / FPS_SET;
@@ -204,24 +244,19 @@ public class Game implements Runnable{
         this.gameThread = gameThread;
     }
 
-    /**
-     * @return the rooms
-     */
-    public ArrayList<Room> getRooms() {
+    public Room[] getRooms() {
         return rooms;
     }
 
-    /**
-     * @param rooms the rooms to set
-     */
-    public void setRooms(ArrayList<Room> rooms) {
+    public void setRooms(Room[] rooms) {
         this.rooms = rooms;
     }
 
-    /**
-     * @return the player
-     */
-    public Player getPlayer() {
-        return player;
+    public Room getCurrentRoom() {
+        return CurrentRoom;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        CurrentRoom = currentRoom;
     }
 }
