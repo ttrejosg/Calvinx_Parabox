@@ -18,6 +18,7 @@ public class RoomSelector extends JPanel {
 
     private JButton backButton;
     private JButton[] roomButtons;
+    private JLabel backgroundLabel;
     public RoomSelector(){
         initComponents();
     }
@@ -28,6 +29,7 @@ public class RoomSelector extends JPanel {
     private void initComponents(){
         initRoomSelector();
         initBackButton();
+        initBackgroundLabel();
     }
 
     /**
@@ -35,7 +37,6 @@ public class RoomSelector extends JPanel {
      */
     private void initRoomSelector(){
         this.setPreferredSize(new Dimension(GAME_WIDTH,GAME_HEIGHT));
-        this.setBackground(Color.blue);
         this.setLayout(null);
         File file = new File(ROOMS_PATH);
         File[] rooms = file.listFiles();
@@ -64,9 +65,22 @@ public class RoomSelector extends JPanel {
     }
 
     /**
+     * Método que inicializa el fondo.
+     */
+    private void initBackgroundLabel() {
+        this.backgroundLabel = new JLabel();
+        this.backgroundLabel.setBounds(0, 0,GAME_WIDTH,GAME_HEIGHT);
+        this.backgroundLabel.setVisible(true);
+        ImageIcon wallpaper = new ImageIcon("src/Resources/Images/Fond.png");
+        Icon icon = new ImageIcon(wallpaper.getImage());
+        this.backgroundLabel.setIcon(icon);
+        this.add(this.backgroundLabel);
+    }
+
+    /**
      * Crea un boton para la sala con el id asignado
-     * @param id
-     * @return
+     * @param id el nmúmero de la sala.
+     * @return el boton creado.
      */
     private JButton createRoomButton(int id){
         JButton roomButton = new JButton();
@@ -82,12 +96,18 @@ public class RoomSelector extends JPanel {
      */
     private void initBackButton() {
         this.backButton = new JButton();
-        this.backButton.setForeground(Color.red);
         this.backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.backButton.setFont(new Font("Arial",1,13));
-        this.backButton.setText("Volver");
-        this.backButton.setBounds((int)(GAME_WIDTH*0.05),(int)(GAME_WIDTH*0.05),(int)(GAME_WIDTH*0.04),(int)(GAME_WIDTH*0.04));
+        this.backButton.setBounds(563, 546, 158, 67);
+        this.backButton.setContentAreaFilled(false);
         this.add(this.backButton);
+    }
+
+    public JLabel getBackgroundLabel() {
+        return backgroundLabel;
+    }
+
+    public void setBackgroundLabel(JLabel backgroundLabel) {
+        this.backgroundLabel = backgroundLabel;
     }
 
     public JButton getBackButton() {

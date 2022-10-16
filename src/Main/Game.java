@@ -1,5 +1,6 @@
 package Main;
 
+import Components.Block;
 import Components.Player;
 import Components.Room;
 import Handlers.*;
@@ -27,7 +28,6 @@ public class Game implements Runnable{
     private final int FPS_SET = 120;
     private final int UPS_SET = 200;
     private final boolean SHOW_FPS_UPS = true;
-    private int steps = 0;
 
     /**
      * Constructor de la clase Game
@@ -52,21 +52,31 @@ public class Game implements Runnable{
     private void initComponents(){
 
         this.gWindow.requestFocus();
-
+        this.gWindow.add(this.gPanel);
+        this.gPanel.setVisible(false);
+        this.gPanel.setEnabled(false);
         LoadRooms();
         initRoomSelectorActionListeners();
 
         this.gWindow.setVisible(true);
+        ImageHandler.loadImage();
     }
 
+    /**
+     * Método que carga todos los niveles.
+     */
     private void LoadRooms(){
         File[] rooms = new File(ROOMS_PATH).listFiles();
         this.rooms = new Room[rooms.length];
+        Player player = new Player(new Point(180, 180));
         for(int i=0;i<rooms.length;i++){
-            this.rooms[i] = new Room(i+1,rooms[i]);
+            this.rooms[i] = new Room(i+1,rooms[i], player);
         }
     }
 
+    /**
+     * Método que inicia los ActionListeners de Selector de niveles.
+     */
     private void initRoomSelectorActionListeners(){
         JButton[] roomButtons = this.gWindow.getRoomSelector().getRoomButtons();
         for(int i=0;i<roomButtons.length;i++){
@@ -87,14 +97,13 @@ public class Game implements Runnable{
     public void initGameThread(){
         this.gWindow.getRoomSelector().setEnabled(false);
         this.gWindow.getRoomSelector().setVisible(false);
-        this.gWindow.add(this.gPanel);
-        this.gPanel.setEnabled(true);
-        this.gPanel.setVisible(true);
         this.gWindow.setFocusable(true);
         this.gWindow.requestFocus();
         this.gameThread = new Thread(this);
         this.playing = true;
         this.gameThread.start();
+        this.gPanel.setEnabled(true);
+        this.gPanel.setVisible(true);
     }
 
     /**
@@ -142,50 +151,66 @@ public class Game implements Runnable{
     }
     
     /**
-     * Método que actualiza los componentes del juego
+     * Método que actualiza los componentes del juego.
      */
     public void update(){
         if(KeyHandler.KT_A) {
-            if(steps < 60){
-                this.player.setState(4);
-                this.player.getPosition().translate(-3, 0);
-                steps += 3;
-            } else {
-                steps = 0;
-                KeyHandler.KT_A = false;
-            }
+            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
+                if(!colissionLeft()) this.CurrentRoom.getPlayer().update();
+            }else this.CurrentRoom.getPlayer().update();
         }
         else if(KeyHandler.KT_D){
-            if(steps < 60){
-                this.getPlayer().setState(2);
-                this.player.getPosition().translate(3, 0);
-                steps += 3;
-            } else {
-                steps = 0;
-                KeyHandler.KT_D = false;
-            }
+            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
+                if(!colissionRight()) this.CurrentRoom.getPlayer().update();
+            }else this.CurrentRoom.getPlayer().update();
         }
         else if(KeyHandler.KT_W ){
-            if(steps < 60){
-                this.getPlayer().setState(1);
-                this.player.getPosition().translate(0, -3);
-                steps += 3;
-            } else {
-                steps = 0;
-                KeyHandler.KT_W = false;
-            }
+            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
+                if(!colissionUp()) this.CurrentRoom.getPlayer().update();
+            }else this.CurrentRoom.getPlayer().update();
         }
         else if(KeyHandler.KT_S ){
-            if(steps < 60){
-                this.getPlayer().setState(3);
-                this.player.getPosition().translate(0, 3);
-                steps += 3;
-            } else {
-                steps = 0;
-                KeyHandler.KT_S = false;
-            }
+            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
+                if(!colissionDown()) this.CurrentRoom.getPlayer().update();
+            }else this.CurrentRoom.getPlayer().update();
         }
-        else this.getPlayer().setState(0);
+        else this.CurrentRoom.getPlayer().setState(0);
+    }
+
+    public boolean colissionRight(){
+        int newX = this.getCurrentRoom().getPlayer().getPosition().x + 60;
+        int y = this.getCurrentRoom().getPlayer().getPosition().y;
+        for(Block b: this.getCurrentRoom().getBlocks()){
+            if(y == b.getPosition().y && newX == b.getPosition().x) return true;
+        }
+        return false;
+    }
+
+    public boolean colissionLeft(){
+        int newX = this.getCurrentRoom().getPlayer().getPosition().x - 60;
+        int y = this.getCurrentRoom().getPlayer().getPosition().y;
+        for(Block b: this.getCurrentRoom().getBlocks()){
+            if(y == b.getPosition().y && newX == b.getPosition().x) return true;
+        }
+        return false;
+    }
+
+    public boolean colissionUp(){
+        int newY = this.getCurrentRoom().getPlayer().getPosition().y - 60;
+        int x = this.getCurrentRoom().getPlayer().getPosition().x;
+        for(Block b: this.getCurrentRoom().getBlocks()){
+            if(x == b.getPosition().x && newY == b.getPosition().y) return true;
+        }
+        return false;
+    }
+
+    public boolean colissionDown(){
+        int newY = this.getCurrentRoom().getPlayer().getPosition().y + 60;
+        int x = this.getCurrentRoom().getPlayer().getPosition().x;
+        for(Block b: this.getCurrentRoom().getBlocks()){
+            if(x == b.getPosition().x && newY == b.getPosition().y) return true;
+        }
+        return false;
     }
 
     /**

@@ -12,7 +12,7 @@ import static javax.swing.BorderFactory.createEtchedBorder;
  */
 public class Menu extends JPanel {
 
-    private JLabel tittleLabel;
+    private JLabel backgroundLabel;
     private JButton playButton;
     private JButton controlsButton;
     private JButton quitButton;
@@ -29,7 +29,7 @@ public class Menu extends JPanel {
      * Metodo que crea los componentes del menu
      */
     private void createComponents(){
-        this.tittleLabel = new JLabel();
+        this.backgroundLabel = new JLabel();
         this.playButton = new JButton();
         this.controlsButton = new JButton();
         this.quitButton = new JButton();
@@ -40,63 +40,68 @@ public class Menu extends JPanel {
      */
     private void initComponents(){
         initMenu();
-        initTittleLabel();
         initPlayButton();
         initControlsButton();
         initQuitButton();
+        initBackgroundLabel();
     }
 
+    /**
+     * Método que inicializa el menú.
+     */
     private void initMenu(){
-        this.setBackground(Color.blue);
         this.setPreferredSize(new Dimension(GAME_WIDTH,GAME_HEIGHT));
         this.setLayout(null);
     }
 
-    private void initTittleLabel(){
-        this.tittleLabel.setForeground(Color.red);
-        this.tittleLabel.setBorder(createEtchedBorder(0, new Color(0, 128, 105), new Color(0, 128, 105)));
-        this.tittleLabel.setFont(new Font("Arial",1,34));
-        this.tittleLabel.setText("Calvinx Parabox");
-        this.tittleLabel.setBounds((int)(GAME_WIDTH*0.2),(int)(GAME_HEIGHT*0.1) ,(int)(GAME_WIDTH*0.6),(int)(GAME_HEIGHT*0.3));
-        this.tittleLabel. setVisible(true);
-        this.add(this.tittleLabel);
+    /**
+     * Método que inicializa el fondo del menú.
+     */
+    private void initBackgroundLabel(){
+        this.backgroundLabel.setBounds(0, 0,GAME_WIDTH,GAME_HEIGHT);
+        this.backgroundLabel.setVisible(true);
+        ImageIcon wallpaper = new ImageIcon("src/Resources/Images/CalvinxParabox.png");
+        Icon icon = new ImageIcon(wallpaper.getImage());
+        this.backgroundLabel.setIcon(icon);
+        this.add(this.backgroundLabel);
     }
 
+    /**
+     * Método que inicializa el boton de jugar.
+     */
     private void initPlayButton(){
-        this.playButton.setForeground(Color.red);
-        this.playButton.setBorder(createEtchedBorder(0, new Color(0, 128, 105), new Color(0, 128, 105)));
-        this.playButton.setFont(new Font("Arial",1,15));
-        this.playButton.setText("Play");
         this.playButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.playButton.setBounds((int)(GAME_WIDTH*0.45),(int)(GAME_HEIGHT*0.6) ,(int)(GAME_WIDTH*0.1),(int)(GAME_HEIGHT*0.1));
-        this.playButton. setVisible(true);
+        this.playButton.setBounds(561,476 ,158, 67);
+        this.playButton.setContentAreaFilled(false);
         this.add(this.playButton);
     }
+
+    /**
+     * Método que inicializa el boton para ver las instrucciones del juego.
+     */
     private void initControlsButton(){
-        this.controlsButton.setForeground(Color.red);
-        this.controlsButton.setBorder(createEtchedBorder(0, new Color(0, 128, 105), new Color(0, 128, 105)));
-        this.controlsButton.setFont(new Font("TimesNewRoman",1,15));
-        this.controlsButton.setText("Controls");
         this.controlsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.controlsButton.setBounds((int)(GAME_WIDTH*0.45),(int)(GAME_HEIGHT*0.7) ,(int)(GAME_WIDTH*0.1),(int)(GAME_HEIGHT*0.1));
+        this.controlsButton.setBounds(658, 559, 158, 67);
+        this.controlsButton.setContentAreaFilled(false);
         this.add(this.controlsButton);
     }
+
+    /**
+     * Método que inicializa el boton que cierra el programa.
+     */
     private void initQuitButton(){
-        this.quitButton.setForeground(Color.red);
-        this.quitButton.setBorder(createEtchedBorder(0, new Color(0, 128, 105), new Color(0, 128, 105)));
-        this.quitButton.setFont(new Font("TimesNewRoman",1,15));
-        this.quitButton.setText("Quit");
         this.quitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.quitButton.setBounds((int)(GAME_WIDTH*0.45),(int)(GAME_HEIGHT*0.8) ,(int)(GAME_WIDTH*0.1),(int)(GAME_HEIGHT*0.1));
+        this.quitButton.setBounds(483, 561, 159, 67);
+        this.quitButton.setContentAreaFilled(false);
         this.add(this.quitButton);
     }
 
-    public JLabel getTittleLabel() {
-        return tittleLabel;
+    public JLabel getBackgroundLabel() {
+        return backgroundLabel;
     }
 
-    public void setTittleLabel(JLabel tittleLabel) {
-        this.tittleLabel = tittleLabel;
+    public void setBackgroundLabel(JLabel backgroundLabel) {
+        this.backgroundLabel = backgroundLabel;
     }
 
     public JButton getPlayButton() {

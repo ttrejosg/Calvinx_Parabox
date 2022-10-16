@@ -1,6 +1,10 @@
 package Components;
 
-import java.awt.Graphics;
+import Handlers.Constants;
+import Handlers.ImageHandler;
+
+import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,22 +23,46 @@ public class Room {
     private Player player;
     private boolean passed;
 
-    public Room(int id, File roomFile) {
+    public Room(int id, File roomFile, Player player) {
         this.id = id;
+        this.player = player;
         this.passed = false;
+        createComponents();
         initRoom(roomFile);
     }
-    
-    private void initRoom(File level){
 
+    private void createComponents() {
+        this.blocks = new ArrayList<>();
+        this.walls = new ArrayList<>();
+        this.releaseZones = new ArrayList<>();
+    }
+
+    private void initRoom(File level){
+        try {
+            FileReader fr = new FileReader(level);
+            BufferedReader br = new BufferedReader(fr);
+            String linea = "";
+            for(int i = 0; (linea=br.readLine())!=null; i ++){
+                for(int j = 0; j < linea.length(); j ++){
+                    if(linea.charAt(j) == '#') {
+                        this.blocks.add(new Block(new Point(i * Constants.BLOCKS_SIZE, j * Constants.BLOCKS_SIZE), Constants.WALL_PATH));
+                    }
+                }
+            }
+            fr.close();
+        } catch(Exception e){
+            System.out.println("Error");
+        }
     }
     
     private void update(){
         
     }
     
-    private void paint(Graphics g){
-        
+    public void paint(Graphics g){
+        for(Block block: this.blocks){
+            g.drawImage(ImageHandler.get(block.getPath()), block.getPosition().x, block.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
+        }
     }
 
     /**
