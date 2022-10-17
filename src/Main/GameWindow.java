@@ -162,6 +162,7 @@ public class GameWindow extends JFrame{
         };
         this.roomSelector.getBackButton().addActionListener(actionListener);
         this.controlsPanel.getBackButton().addActionListener(actionListener);
+
     }
 
     public Menu getMenu() {

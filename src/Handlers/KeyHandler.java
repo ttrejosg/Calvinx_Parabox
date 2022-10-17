@@ -17,6 +17,7 @@ public class KeyHandler implements KeyListener{
     public static boolean KT_A = false;
     public static boolean KT_S = false;
     public static boolean KT_D = false;
+    public static boolean KP_R = false;
 
     public KeyHandler(){
 
@@ -32,6 +33,7 @@ public class KeyHandler implements KeyListener{
         KP_A = e.getKeyChar() == 'a';
         KP_S = e.getKeyChar() == 's';
         KP_D = e.getKeyChar() == 'd';
+        KP_R = e.getKeyChar() == 'r';
     }
 
     @Override
