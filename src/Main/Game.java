@@ -1,8 +1,6 @@
 package Main;
 
-import Components.Block;
-import Components.Player;
-import Components.Room;
+import Components.*;
 import Handlers.*;
 import java.awt.Point;
 import static Handlers.Constants.*;
@@ -156,61 +154,173 @@ public class Game implements Runnable{
     public void update(){
         if(KeyHandler.KT_A) {
             if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionLeft()) this.CurrentRoom.getPlayer().update();
+                if(!colissionWallLeft(this.getCurrentRoom().getPlayer())) {
+                    Block b = colissionBlockLeft();
+                    if(b != null) {
+                        if(!colissionWallLeft(b)){
+                            b.update();
+                            this.CurrentRoom.getPlayer().update();
+                        }
+
+                    }else this.CurrentRoom.getPlayer().update();
+                }
             }else this.CurrentRoom.getPlayer().update();
+
+            if(win()) returnRoomSelector();
         }
         else if(KeyHandler.KT_D){
             if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionRight()) this.CurrentRoom.getPlayer().update();
+                if(!colissionWallRight(this.getCurrentRoom().getPlayer())) {
+                    Block b = colissionBlockRight();
+                    if(b != null) {
+                        if(!colissionWallRight(b)){
+                            b.update();
+                            this.CurrentRoom.getPlayer().update();
+                        }
+
+                    }else this.CurrentRoom.getPlayer().update();
+                }
             }else this.CurrentRoom.getPlayer().update();
+
+            if(win()) returnRoomSelector();
         }
         else if(KeyHandler.KT_W ){
             if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionUp()) this.CurrentRoom.getPlayer().update();
+                if(!colissionWallUp(this.getCurrentRoom().getPlayer())) {
+                    Block b = colissionBlockUp();
+                    if(b != null) {
+                        if(!colissionWallUp(b)){
+                            b.update();
+                            this.CurrentRoom.getPlayer().update();
+                        }
+
+                    }else this.CurrentRoom.getPlayer().update();
+                }
             }else this.CurrentRoom.getPlayer().update();
+
+            if(win()) returnRoomSelector();
         }
         else if(KeyHandler.KT_S ){
             if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionDown()) this.CurrentRoom.getPlayer().update();
+                if(!colissionWallDown(this.getCurrentRoom().getPlayer())) {
+                    Block b = colissionBlockDown();
+                    if(b != null) {
+                        if(!colissionWallDown(b)){
+                            b.update();
+                            this.CurrentRoom.getPlayer().update();
+                        }
+
+                    }else this.CurrentRoom.getPlayer().update();
+                }
             }else this.CurrentRoom.getPlayer().update();
-        }
-        else this.CurrentRoom.getPlayer().setState(0);
+
+            if(win()) returnRoomSelector();
+        } else if (KeyHandler.KP_R) {
+            this.CurrentRoom.initRoom();
+        } else this.CurrentRoom.getPlayer().setState(0);
     }
 
-    public boolean colissionRight(){
-        int newX = this.getCurrentRoom().getPlayer().getPosition().x + 60;
-        int y = this.getCurrentRoom().getPlayer().getPosition().y;
-        for(Block b: this.getCurrentRoom().getBlocks()){
-            if(y == b.getPosition().y && newX == b.getPosition().x) return true;
-        }
-        return false;
-    }
-
-    public boolean colissionLeft(){
-        int newX = this.getCurrentRoom().getPlayer().getPosition().x - 60;
-        int y = this.getCurrentRoom().getPlayer().getPosition().y;
-        for(Block b: this.getCurrentRoom().getBlocks()){
-            if(y == b.getPosition().y && newX == b.getPosition().x) return true;
+    public boolean colissionWallRight(GameObject go){
+        int newX = go.getPosition().x + 60;
+        int y = go.getPosition().y;
+        for(Wall w: this.getCurrentRoom().getWalls()){
+            if(y == w.getPosition().y && newX == w.getPosition().x) return true;
         }
         return false;
     }
 
-    public boolean colissionUp(){
-        int newY = this.getCurrentRoom().getPlayer().getPosition().y - 60;
-        int x = this.getCurrentRoom().getPlayer().getPosition().x;
-        for(Block b: this.getCurrentRoom().getBlocks()){
-            if(x == b.getPosition().x && newY == b.getPosition().y) return true;
+    public boolean colissionWallLeft(GameObject go){
+        int newX = go.getPosition().x - 60;
+        int y = go.getPosition().y;
+        for(Wall w: this.getCurrentRoom().getWalls()){
+            if(y == w.getPosition().y && newX == w.getPosition().x) return true;
         }
         return false;
     }
 
-    public boolean colissionDown(){
+    public boolean colissionWallUp(GameObject go){
+        int newY = go.getPosition().y - 60;
+        int x = go.getPosition().x;
+        for(Wall w: this.getCurrentRoom().getWalls()){
+            if(x == w.getPosition().x && newY == w.getPosition().y) return true;
+        }
+        return false;
+    }
+
+    public boolean colissionWallDown(GameObject go){
+        int newY = go.getPosition().y + 60;
+        int x = go.getPosition().x;
+        for(Wall w: this.getCurrentRoom().getWalls()){
+            if(x == w.getPosition().x && newY == w.getPosition().y) return true;
+        }
+        return false;
+    }
+
+    public Block colissionBlockDown(){
         int newY = this.getCurrentRoom().getPlayer().getPosition().y + 60;
         int x = this.getCurrentRoom().getPlayer().getPosition().x;
         for(Block b: this.getCurrentRoom().getBlocks()){
-            if(x == b.getPosition().x && newY == b.getPosition().y) return true;
+            if(x == b.getPosition().x && newY == b.getPosition().y) return b;
         }
-        return false;
+        return null;
+    }
+
+    public Block colissionBlockRight(){
+        int newX = this.getCurrentRoom().getPlayer().getPosition().x + 60;
+        int y = this.getCurrentRoom().getPlayer().getPosition().y;
+        for(Block b: this.getCurrentRoom().getBlocks()){
+            if(y == b.getPosition().y && newX == b.getPosition().x) return b;
+        }
+        return null;
+    }
+
+    public Block colissionBlockLeft(){
+        int newX = this.getCurrentRoom().getPlayer().getPosition().x - 60;
+        int y = this.getCurrentRoom().getPlayer().getPosition().y;
+        for(Block b: this.getCurrentRoom().getBlocks()){
+            if(y == b.getPosition().y && newX == b.getPosition().x) return b;
+        }
+        return null;
+    }
+
+    public Block colissionBlockUp(){
+        int newY = this.getCurrentRoom().getPlayer().getPosition().y - 60;
+        int x = this.getCurrentRoom().getPlayer().getPosition().x;
+        for(Block b: this.getCurrentRoom().getBlocks()){
+            if(x == b.getPosition().x && newY == b.getPosition().y) return b;
+        }
+        return null;
+    }
+
+    public boolean win(){
+        for(ReleaseZone rs: this.CurrentRoom.getReleaseZones()){
+            boolean ocupated = false;
+            for(Block b: this.CurrentRoom.getBlocks()){
+                if(b.getPosition().x == rs.getPosition().x && b.getPosition().y == rs.getPosition().y){
+                    ocupated = true;
+                }
+            }
+            if(!ocupated) return false;
+        }
+        Player p = this.CurrentRoom.getPlayer();
+        Door d = this.CurrentRoom.getDoor();
+        if(p.getPosition().x == d.getPosition().x && p.getPosition().y == d.getPosition().y) return true;
+        else return false;
+    }
+
+    public void returnRoomSelector(){
+        try {
+            Thread.sleep(800);
+        }
+        catch(Exception e){
+            System.out.println("Error");
+        }
+        this.gWindow.getRoomSelector().setEnabled(true);
+        this.gWindow.getRoomSelector().setVisible(true);
+        this.playing = false;
+        this.gPanel.setEnabled(false);
+        this.gPanel.setVisible(false);
+        this.CurrentRoom.initRoom();
     }
 
     /**

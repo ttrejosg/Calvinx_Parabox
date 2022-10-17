@@ -1,9 +1,12 @@
 package Main;
 
+import Handlers.Constants;
+import Handlers.ImageHandler;
+
 import static Handlers.Constants.*;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import javax.swing.JPanel;
+
+import java.awt.*;
+import javax.swing.*;
 
 /**
  *
@@ -15,8 +18,8 @@ public class GamePanel extends JPanel{
     public GamePanel(Game game) {
         this.game = game;
         Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
+        this.setBackground(new Color(39, 68, 145));
         this.setPreferredSize(size);
-
     }
 
     /**

@@ -1,5 +1,7 @@
 package Components;
 
+import Handlers.KeyHandler;
+
 import java.awt.Point;
 
 /**
@@ -14,7 +16,10 @@ public class Block extends GameObject{
     
     @Override
     public void update() {
-        
+        if(KeyHandler.KT_A) this.getPosition().translate(-60, 0);
+        else if(KeyHandler.KT_D) this.getPosition().translate(60, 0);
+        else if(KeyHandler.KT_W ) this.getPosition().translate(0, -60);
+        else if(KeyHandler.KT_S ) this.getPosition().translate(0, 60);
     }
     
 }
