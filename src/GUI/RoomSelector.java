@@ -48,19 +48,16 @@ public class RoomSelector extends JPanel {
      * @param rooms
      */
     private void initRoomButtons(File[] rooms){
-        this.roomButtons = new JButton[rooms.length];
-        int x = (int)(GAME_WIDTH*0.1);
-        int y = (int)(GAME_WIDTH*0.05);
-        for(int i=0;i<rooms.length;i++){
-            JButton roomButton = createRoomButton(i+1);
-            roomButton.setBounds(x,y,(int)(GAME_WIDTH*0.05),(int)(GAME_WIDTH*0.05));
-            this.roomButtons[i] = roomButton;
-            this.add(roomButton);
-            if(x >= (int)(GAME_WIDTH*0.9)){
-                x = (int)(GAME_WIDTH*0.1);
-                y+= (int)(GAME_WIDTH*0.1);
+        this.roomButtons = new JButton[9];
+        int n = 1;
+        for(int i = 123; i < 420; i += 145){
+            for(int j = 456; j < 750; j += 145){
+                JButton roomButton = createRoomButton(n);
+                roomButton.setBounds(j, i, 91, 91);
+                this.roomButtons[n - 1] = roomButton;
+                this.add(roomButton);
+                n ++;
             }
-            x+= (int)(GAME_WIDTH*0.05);
         }
     }
 
@@ -71,8 +68,9 @@ public class RoomSelector extends JPanel {
         this.backgroundLabel = new JLabel();
         this.backgroundLabel.setBounds(0, 0,GAME_WIDTH,GAME_HEIGHT);
         this.backgroundLabel.setVisible(true);
-        ImageIcon wallpaper = new ImageIcon("src/Resources/Images/Fond.png");
-        Icon icon = new ImageIcon(wallpaper.getImage());
+        ImageIcon wallpaper = new ImageIcon("src/Resources/Images/SelectorRoom.png");
+        Icon icon = new ImageIcon(wallpaper.getImage().getScaledInstance(backgroundLabel.getWidth(),
+                backgroundLabel.getHeight(), Image.SCALE_DEFAULT));
         this.backgroundLabel.setIcon(icon);
         this.add(this.backgroundLabel);
     }
@@ -88,6 +86,8 @@ public class RoomSelector extends JPanel {
         roomButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         roomButton.setFont(new Font("Arial",1,13));
         roomButton.setText(Integer.toString(id));
+        roomButton.setContentAreaFilled(false);
+        roomButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return roomButton;
     }
 
@@ -97,7 +97,7 @@ public class RoomSelector extends JPanel {
     private void initBackButton() {
         this.backButton = new JButton();
         this.backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.backButton.setBounds(563, 546, 158, 67);
+        this.backButton.setBounds(574, 646, 143, 61);
         this.backButton.setContentAreaFilled(false);
         this.add(this.backButton);
     }

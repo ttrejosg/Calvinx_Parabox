@@ -14,7 +14,6 @@ public class Menu extends JPanel {
 
     private JLabel backgroundLabel;
     private JButton playButton;
-    private JButton controlsButton;
     private JButton quitButton;
 
     /**
@@ -31,7 +30,6 @@ public class Menu extends JPanel {
     private void createComponents(){
         this.backgroundLabel = new JLabel();
         this.playButton = new JButton();
-        this.controlsButton = new JButton();
         this.quitButton = new JButton();
     }
 
@@ -41,7 +39,6 @@ public class Menu extends JPanel {
     private void initComponents(){
         initMenu();
         initPlayButton();
-        initControlsButton();
         initQuitButton();
         initBackgroundLabel();
     }
@@ -77,21 +74,11 @@ public class Menu extends JPanel {
     }
 
     /**
-     * Método que inicializa el boton para ver las instrucciones del juego.
-     */
-    private void initControlsButton(){
-        this.controlsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.controlsButton.setBounds(658, 559, 158, 67);
-        this.controlsButton.setContentAreaFilled(false);
-        this.add(this.controlsButton);
-    }
-
-    /**
      * Método que inicializa el boton que cierra el programa.
      */
     private void initQuitButton(){
         this.quitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.quitButton.setBounds(483, 561, 159, 67);
+        this.quitButton.setBounds(561, 558, 159, 67);
         this.quitButton.setContentAreaFilled(false);
         this.add(this.quitButton);
     }
@@ -110,14 +97,6 @@ public class Menu extends JPanel {
 
     public void setPlayButton(JButton playButton) {
         this.playButton = playButton;
-    }
-
-    public JButton getControlsButton() {
-        return controlsButton;
-    }
-
-    public void setControlsButton(JButton controlsButton) {
-        this.controlsButton = controlsButton;
     }
 
     public JButton getQuitButton() {

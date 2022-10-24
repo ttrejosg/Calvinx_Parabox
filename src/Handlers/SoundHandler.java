@@ -20,7 +20,7 @@ public class SoundHandler {
      * Funcion que carga todos los audios que se encuentran en una carpeta con el fin de ser usados posteriormente
      */
     public static void loadAudio(){
-        File directory = new File("src\\Audio\\");
+        File directory = new File("src/Resources/Audio");
         File[] files = directory.listFiles();
         for(File file : files){
             sounds.add(file);

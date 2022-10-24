@@ -23,7 +23,7 @@ public class Player extends GameObject{
     private Room room;
 
     public Player(Point position) {
-        super(position, "player_sprites_red.png");
+        super(position, "player_sprites.png");
         this.state = 0;
         this.steps = 0;
         loadAnimations();
@@ -79,7 +79,7 @@ public class Player extends GameObject{
      */
     public BufferedImage getSprite(String path) {
         BufferedImage img = null;
-        InputStream is = getClass().getResourceAsStream("/Resources/Images/player_sprites_red.png");
+        InputStream is = getClass().getResourceAsStream("/Resources/Images/player_sprites.png");
         try {
             img = ImageIO.read(is);
         } catch (IOException e) {

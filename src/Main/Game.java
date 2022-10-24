@@ -4,6 +4,8 @@ import Components.*;
 import Handlers.*;
 import java.awt.Point;
 import static Handlers.Constants.*;
+
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,16 +50,17 @@ public class Game implements Runnable{
      * Método que inicializa los componentes de la clase
      */
     private void initComponents(){
-
+        ImageHandler.loadImage();
+        SoundHandler.loadAudio();
         this.gWindow.requestFocus();
         this.gWindow.add(this.gPanel);
         this.gPanel.setVisible(false);
         this.gPanel.setEnabled(false);
         LoadRoomFiles();
         initRoomSelectorActionListeners();
-
+        Clip clip = SoundHandler.createClip(SoundHandler.get("Patricks_Parabox.wav"));
+        clip.start();
         this.gWindow.setVisible(true);
-        ImageHandler.loadImage();
     }
 
     /**

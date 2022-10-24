@@ -21,17 +21,22 @@ public class Room {
     private ArrayList<Block> blocks;
     private ArrayList<Wall> walls;
     private ArrayList<ReleaseZone> releaseZones;
+    private ArrayList<Floor> floor;
     private Door door;
     private Player player;
     private boolean passed;
     private File roomFile;
+    private String background;
+    private Tp tp1;
+    private Tp tp2;
 
-    public Room(int id, File roomFile, Player player) {
+    public Room(int id, File roomFile, Player player, String background) {
         this.id = id;
         this.player = player;
         player.setRoom(this);
         this.passed = false;
         this.roomFile = roomFile;
+        this.background = background;
         createComponents();
         initRoom();
     }
@@ -40,6 +45,7 @@ public class Room {
         this.blocks = new ArrayList<>();
         this.walls = new ArrayList<>();
         this.releaseZones = new ArrayList<>();
+        this.floor = new ArrayList<>();
     }
 
     public void initRoom(){
@@ -86,14 +92,23 @@ public class Room {
                         this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TUNELVERTICAL_PATH));
                     } else if (linea.charAt(j) == 'h') {
                         this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TUNELHORIZONTAL_PATH));
+                    } else if (linea.charAt(j) == 'i') {
+                        this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.DETOURRIGHT_PATH));
                     } else if (linea.charAt(j) == 'r') {
                         this.releaseZones.add(new ReleaseZone(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.RELEASEZONE_PATH));
                     } else if (linea.charAt(j) == 'b') {
                         this.blocks.add(new Block(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.BLOCK_PATH));
+                        this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
                     } else if (linea.charAt(j) == 'd') {
                         this.door = new Door(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.DOOR_PATH);
-                    } else if (linea.charAt(j) == 'p') {
+                    }  else if (linea.charAt(j) == 'p') {
                         this.player.setPosition(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE));
+                        this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
+                    } else if (linea.charAt(j) == '#') {
+                        this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
+                    }else if (linea.charAt(j) == 't') {
+                        if(tp1 == null) tp1 = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
+                        else tp2 = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
                     }
                 }
             }
@@ -108,14 +123,16 @@ public class Room {
     }
     
     public void paint(Graphics g){
+        g.drawImage(ImageHandler.get(this.background), 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, null);
+        for(Floor floor: this.floor){
+            g.drawImage(ImageHandler.get(floor.getPath()), floor.getPosition().x, floor.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
+        }
         for(Wall wall: this.walls) wall.paint(g);
-
         for(ReleaseZone rz: this.releaseZones) rz.paint(g);
-
         if(door != null) door.paint(g);
-
         for(Block block: this.blocks) block.paint(g);
-
+        if(tp1 != null) g.drawImage(ImageHandler.get(tp1.getPath()), tp1.getPosition().x, tp1.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
+        if(tp2 != null) g.drawImage(ImageHandler.get(tp2.getPath()), tp2.getPosition().x, tp2.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
         this.player.paint(g);
     }
 
@@ -232,5 +249,19 @@ public class Room {
      */
     public void setPassed(boolean passed) {
         this.passed = passed;
+    }
+
+    /**
+     * @return the background
+     */
+    public String getBackground() {
+        return background;
+    }
+
+    /**
+     * @param background the background to set
+     */
+    public void setBackground(String background) {
+        this.background = background;
     }
 }
