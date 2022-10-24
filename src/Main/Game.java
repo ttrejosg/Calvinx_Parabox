@@ -4,6 +4,8 @@ import Components.*;
 import Handlers.*;
 import java.awt.Point;
 import static Handlers.Constants.*;
+
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,16 +50,17 @@ public class Game implements Runnable{
      * Método que inicializa los componentes de la clase
      */
     private void initComponents(){
-
+        ImageHandler.loadImage();
+        SoundHandler.loadAudio();
         this.gWindow.requestFocus();
         this.gWindow.add(this.gPanel);
         this.gPanel.setVisible(false);
         this.gPanel.setEnabled(false);
         LoadRooms();
         initRoomSelectorActionListeners();
-
+        Clip clip = SoundHandler.createClip(SoundHandler.get("Patricks_Parabox.wav"));
+        clip.start();
         this.gWindow.setVisible(true);
-        ImageHandler.loadImage();
     }
 
     /**
@@ -68,7 +71,7 @@ public class Game implements Runnable{
         this.rooms = new Room[rooms.length];
         Player player = new Player(new Point(180, 180));
         for(int i=0;i<rooms.length;i++){
-            this.rooms[i] = new Room(i+1,rooms[i], player);
+            this.rooms[i] = new Room(i+1,rooms[i], player, BACKGROUND_PATH);
         }
     }
 
@@ -217,6 +220,16 @@ public class Game implements Runnable{
             if(win()) returnRoomSelector();
         } else if (KeyHandler.KP_R) {
             this.CurrentRoom.initRoom();
+        } else if (KeyHandler.KP_ESC) {
+            if(playing){
+                this.CurrentRoom.setBackground(PAUSE_BACKGROUND_PATH);
+                this.gPanel.getExit().setVisible(true);
+                this.gPanel.getBackToMenuButton().setVisible(true);
+                this.gPanel.getResumeButton().setVisible(true);
+                playing = false;
+                KeyHandler.KP_ESC = false;
+            }
+
         } else this.CurrentRoom.getPlayer().setState(0);
     }
 

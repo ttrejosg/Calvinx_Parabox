@@ -11,6 +11,8 @@ public class Constants {
     public static final int BLOCKS_SIZE = 60;
     public static final String ROOMS_PATH = "src/Rooms";
     public static final String FLOOR_PATH = "floor.png";
+    public static final String BACKGROUND_PATH = "Background_Levels.png";
+    public static final String PAUSE_BACKGROUND_PATH = "Pause.png";
     public static final String DOWN_PATH = "down.png"; // _
     public static final String UP_PATH = "up.png"; // -
     public static final String LEFT_PATH = "left.png"; // [
@@ -30,7 +32,9 @@ public class Constants {
     public static final String TUNELVERTICAL_PATH = "tunel_vertical.png"; // v
     public static final String TUNELHORIZONTAL_PATH = "tunel_horizontal.png"; // h
     public static final String RELEASEZONE_PATH = "releaseZone.png"; // r
+    public static final String DETOURRIGHT_PATH = "detour_right.png"; // i
     public static final String BLOCK_PATH = "block.png"; // b
     public static final String DOOR_PATH = "door.png"; // d
+    public static final String TP_PATH = "Tp.png"; // t
 }
 

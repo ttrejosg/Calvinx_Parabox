@@ -1,6 +1,5 @@
 package Main;
 
-import GUI.ControlsPanel;
 import GUI.Menu;
 import GUI.RoomSelector;
 import Handlers.KeyHandler;
@@ -17,7 +16,6 @@ public class GameWindow extends JFrame{
 
     private Menu menu;
     private RoomSelector roomSelector;
-    private ControlsPanel controlsPanel;
 
     public GameWindow() {
         createComponents();
@@ -30,7 +28,6 @@ public class GameWindow extends JFrame{
     private void createComponents(){
         this.menu = new Menu();
         this.roomSelector = new RoomSelector();
-        this.controlsPanel = new ControlsPanel();
     }
     
     /**
@@ -40,7 +37,6 @@ public class GameWindow extends JFrame{
         initWindow();
         initMenu();
         initRoomSelector();
-        initControlsPanel();
         initActionListeners();
     }
 
@@ -75,21 +71,10 @@ public class GameWindow extends JFrame{
     }
 
     /**
-     * Inicia el ControlsPanel dentro de la ventana.
-     */
-    private void initControlsPanel(){
-        this.add(this.controlsPanel);
-        this.pack();
-        this.controlsPanel.setEnabled(false);
-        this.controlsPanel.setVisible(false);
-    }
-
-    /**
      * Método que inicializa los actionListener de los botones de los diferentes paneles.
      */
     private void initActionListeners(){
         initPlayActionListener();
-        initControlsActionListener();
         initQuitActionListener();
         initBackActionListener();
     }
@@ -103,33 +88,12 @@ public class GameWindow extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 menu.setEnabled(false);
                 menu.setVisible(false);
-                controlsPanel.setEnabled(false);
-                controlsPanel.setVisible(false);
                 roomSelector.setEnabled(true);
                 roomSelector.setVisible(true);
                 roomSelector.getBackButton().setVisible(true);
             }
         });
     }
-
-    /**
-     * Añade la funcionalidad del boton de controles en el menu.
-     */
-    private void initControlsActionListener(){
-        this.menu.getControlsButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menu.setEnabled(false);
-                menu.setVisible(false);
-                roomSelector.setEnabled(false);
-                roomSelector.setVisible(false);
-                controlsPanel.setEnabled(true);
-                controlsPanel.setVisible(true);
-                controlsPanel.getBackButton().setVisible(true);
-            }
-        });
-    }
-
     /**
      * Añade la funcionalidad del boton de salir en el menu.
      */
@@ -151,17 +115,13 @@ public class GameWindow extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 roomSelector.setEnabled(false);
                 roomSelector.setVisible(false);
-                controlsPanel.setEnabled(true);
-                controlsPanel.setVisible(true);
                 menu.setEnabled(true);
                 menu.setVisible(true);
                 roomSelector.getBackButton().setVisible(false);
-                controlsPanel.getBackButton().setVisible(false);
 
             }
         };
         this.roomSelector.getBackButton().addActionListener(actionListener);
-        this.controlsPanel.getBackButton().addActionListener(actionListener);
 
     }
 
@@ -181,11 +141,5 @@ public class GameWindow extends JFrame{
         this.roomSelector = roomSelector;
     }
 
-    public ControlsPanel getControlsPanel() {
-        return controlsPanel;
-    }
 
-    public void setControlsPanel(ControlsPanel controlsPanel) {
-        this.controlsPanel = controlsPanel;
-    }
 }

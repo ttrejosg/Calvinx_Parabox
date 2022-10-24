@@ -18,6 +18,7 @@ public class KeyHandler implements KeyListener{
     public static boolean KT_S = false;
     public static boolean KT_D = false;
     public static boolean KP_R = false;
+    public static boolean KP_ESC = false;
 
     public KeyHandler(){
 
@@ -42,5 +43,6 @@ public class KeyHandler implements KeyListener{
         KT_A = e.getKeyChar() == 'a';
         KT_S = e.getKeyChar() == 's';
         KT_D = e.getKeyChar() == 'd';
+        KP_ESC = e.getKeyCode() == KeyEvent.VK_ESCAPE;
     }
 }
