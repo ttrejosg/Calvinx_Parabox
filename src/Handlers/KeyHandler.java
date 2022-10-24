@@ -26,6 +26,11 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyTyped(KeyEvent e) {
+        KT_W = e.getKeyChar() == 'w';
+        KT_A = e.getKeyChar() == 'a';
+        KT_S = e.getKeyChar() == 's';
+        KT_D = e.getKeyChar() == 'd';
+        KP_ESC = e.getKeyCode() == KeyEvent.VK_ESCAPE;
     }
 
     @Override
@@ -39,10 +44,5 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
-        KT_W = e.getKeyChar() == 'w';
-        KT_A = e.getKeyChar() == 'a';
-        KT_S = e.getKeyChar() == 's';
-        KT_D = e.getKeyChar() == 'd';
-        KP_ESC = e.getKeyCode() == KeyEvent.VK_ESCAPE;
     }
 }

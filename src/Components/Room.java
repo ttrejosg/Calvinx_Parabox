@@ -2,12 +2,14 @@ package Components;
 
 import Handlers.Constants;
 import Handlers.ImageHandler;
+import Handlers.KeyHandler;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.security.Key;
 import java.util.ArrayList;
 
 /**
@@ -31,6 +33,7 @@ public class Room {
     public Room(int id, File roomFile, Player player, String background) {
         this.id = id;
         this.player = player;
+        player.setRoom(this);
         this.passed = false;
         this.roomFile = roomFile;
         this.background = background;
@@ -50,9 +53,6 @@ public class Room {
             FileReader fr = new FileReader(roomFile);
             BufferedReader br = new BufferedReader(fr);
             String linea = "";
-            this.walls.clear();
-            this.releaseZones.clear();
-            this.blocks.clear();
 
             for(int i = 0; (linea=br.readLine())!=null; i ++){
                 for(int j = 0; j < linea.length(); j ++){
@@ -118,30 +118,39 @@ public class Room {
         }
     }
     
-    private void update(){
-
+    public void update(){
+        this.player.update();
     }
     
     public void paint(Graphics g){
         g.drawImage(ImageHandler.get(this.background), 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, null);
-
         for(Floor floor: this.floor){
             g.drawImage(ImageHandler.get(floor.getPath()), floor.getPosition().x, floor.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
         }
-        for(Wall wall: this.walls){
-            g.drawImage(ImageHandler.get(wall.getPath()), wall.getPosition().x, wall.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
-        }
-        for(ReleaseZone rz: this.releaseZones){
-            g.drawImage(ImageHandler.get(rz.getPath()), rz.getPosition().x, rz.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
-        }
-        if(door != null) g.drawImage(ImageHandler.get(door.getPath()), door.getPosition().x, door.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
-
+        for(Wall wall: this.walls) wall.paint(g);
+        for(ReleaseZone rz: this.releaseZones) rz.paint(g);
+        if(door != null) door.paint(g);
+        for(Block block: this.blocks) block.paint(g);
         if(tp1 != null) g.drawImage(ImageHandler.get(tp1.getPath()), tp1.getPosition().x, tp1.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
         if(tp2 != null) g.drawImage(ImageHandler.get(tp2.getPath()), tp2.getPosition().x, tp2.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
+        this.player.paint(g);
+    }
 
-        for(Block block: this.blocks){
-            g.drawImage(ImageHandler.get(block.getPath()), block.getPosition().x, block.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
+    public GameObject getObjectAt(int x,int y){
+        GameObject gObject = null;
+        int i = 0;
+        while(i < walls.size()  && gObject == null){
+            Wall wall =  walls.get(i);
+            if(wall.getPosition().x == x && wall.getPosition().y == y) gObject = wall;
+            i ++;
         }
+        i=0;
+        while(i < blocks.size() && gObject == null){
+            Block block =  blocks.get(i);
+            if(block.getPosition().x == x && block.getPosition().y == y) gObject = block;
+            i ++;
+        }
+        return gObject;
     }
 
     /**
