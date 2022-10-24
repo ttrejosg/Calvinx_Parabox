@@ -1,6 +1,9 @@
 package Components;
 
-import java.awt.Point;
+import Handlers.Constants;
+import Handlers.ImageHandler;
+
+import java.awt.*;
 
 /**
  *
@@ -16,6 +19,10 @@ public class Wall extends GameObject{
     public void update() {
         
     }
-    
-    
+
+    @Override
+    public void paint(Graphics g) {
+        g.drawImage(ImageHandler.get(this.getPath()), this.getPosition().x, this.getPosition().y
+                ,Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
+    }
 }

@@ -1,6 +1,6 @@
 package Components;
 
-import java.awt.Point;
+import java.awt.*;
 
 /**
  *
@@ -16,6 +16,8 @@ public abstract class GameObject {
     }
     
     abstract public void update();
+
+    abstract public void paint(Graphics g);
 
     /**
      * @return the position

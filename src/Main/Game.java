@@ -20,7 +20,7 @@ public class Game implements Runnable{
     private boolean playing;
     private Thread gameThread;
 
-    private Room[] rooms;
+    private File[] roomFiles;
     private Room CurrentRoom;
 
     private final int FPS_SET = 120;
@@ -53,7 +53,7 @@ public class Game implements Runnable{
         this.gWindow.add(this.gPanel);
         this.gPanel.setVisible(false);
         this.gPanel.setEnabled(false);
-        LoadRooms();
+        LoadRoomFiles();
         initRoomSelectorActionListeners();
 
         this.gWindow.setVisible(true);
@@ -63,13 +63,8 @@ public class Game implements Runnable{
     /**
      * Método que carga todos los niveles.
      */
-    private void LoadRooms(){
-        File[] rooms = new File(ROOMS_PATH).listFiles();
-        this.rooms = new Room[rooms.length];
-        Player player = new Player(new Point(180, 180));
-        for(int i=0;i<rooms.length;i++){
-            this.rooms[i] = new Room(i+1,rooms[i], player);
-        }
+    private void LoadRoomFiles(){
+        this.roomFiles = new File(ROOMS_PATH).listFiles();
     }
 
     /**
@@ -82,7 +77,7 @@ public class Game implements Runnable{
             roomButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    CurrentRoom = rooms[finalI];
+                    CurrentRoom = new Room(finalI,roomFiles[finalI], new Player(new Point(0, 0)));
                     initGameThread();
                 }
             });
@@ -152,144 +147,9 @@ public class Game implements Runnable{
      * Método que actualiza los componentes del juego.
      */
     public void update(){
-        if(KeyHandler.KT_A) {
-            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionWallLeft(this.getCurrentRoom().getPlayer())) {
-                    Block b = colissionBlockLeft();
-                    if(b != null) {
-                        if(!colissionWallLeft(b)){
-                            b.update();
-                            this.CurrentRoom.getPlayer().update();
-                        }
-
-                    }else this.CurrentRoom.getPlayer().update();
-                }
-            }else this.CurrentRoom.getPlayer().update();
-
-            if(win()) returnRoomSelector();
-        }
-        else if(KeyHandler.KT_D){
-            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionWallRight(this.getCurrentRoom().getPlayer())) {
-                    Block b = colissionBlockRight();
-                    if(b != null) {
-                        if(!colissionWallRight(b)){
-                            b.update();
-                            this.CurrentRoom.getPlayer().update();
-                        }
-
-                    }else this.CurrentRoom.getPlayer().update();
-                }
-            }else this.CurrentRoom.getPlayer().update();
-
-            if(win()) returnRoomSelector();
-        }
-        else if(KeyHandler.KT_W ){
-            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionWallUp(this.getCurrentRoom().getPlayer())) {
-                    Block b = colissionBlockUp();
-                    if(b != null) {
-                        if(!colissionWallUp(b)){
-                            b.update();
-                            this.CurrentRoom.getPlayer().update();
-                        }
-
-                    }else this.CurrentRoom.getPlayer().update();
-                }
-            }else this.CurrentRoom.getPlayer().update();
-
-            if(win()) returnRoomSelector();
-        }
-        else if(KeyHandler.KT_S ){
-            if(this.getCurrentRoom().getPlayer().getSteps() == 0){
-                if(!colissionWallDown(this.getCurrentRoom().getPlayer())) {
-                    Block b = colissionBlockDown();
-                    if(b != null) {
-                        if(!colissionWallDown(b)){
-                            b.update();
-                            this.CurrentRoom.getPlayer().update();
-                        }
-
-                    }else this.CurrentRoom.getPlayer().update();
-                }
-            }else this.CurrentRoom.getPlayer().update();
-
-            if(win()) returnRoomSelector();
-        } else if (KeyHandler.KP_R) {
-            this.CurrentRoom.initRoom();
-        } else this.CurrentRoom.getPlayer().setState(0);
-    }
-
-    public boolean colissionWallRight(GameObject go){
-        int newX = go.getPosition().x + 60;
-        int y = go.getPosition().y;
-        for(Wall w: this.getCurrentRoom().getWalls()){
-            if(y == w.getPosition().y && newX == w.getPosition().x) return true;
-        }
-        return false;
-    }
-
-    public boolean colissionWallLeft(GameObject go){
-        int newX = go.getPosition().x - 60;
-        int y = go.getPosition().y;
-        for(Wall w: this.getCurrentRoom().getWalls()){
-            if(y == w.getPosition().y && newX == w.getPosition().x) return true;
-        }
-        return false;
-    }
-
-    public boolean colissionWallUp(GameObject go){
-        int newY = go.getPosition().y - 60;
-        int x = go.getPosition().x;
-        for(Wall w: this.getCurrentRoom().getWalls()){
-            if(x == w.getPosition().x && newY == w.getPosition().y) return true;
-        }
-        return false;
-    }
-
-    public boolean colissionWallDown(GameObject go){
-        int newY = go.getPosition().y + 60;
-        int x = go.getPosition().x;
-        for(Wall w: this.getCurrentRoom().getWalls()){
-            if(x == w.getPosition().x && newY == w.getPosition().y) return true;
-        }
-        return false;
-    }
-
-    public Block colissionBlockDown(){
-        int newY = this.getCurrentRoom().getPlayer().getPosition().y + 60;
-        int x = this.getCurrentRoom().getPlayer().getPosition().x;
-        for(Block b: this.getCurrentRoom().getBlocks()){
-            if(x == b.getPosition().x && newY == b.getPosition().y) return b;
-        }
-        return null;
-    }
-
-    public Block colissionBlockRight(){
-        int newX = this.getCurrentRoom().getPlayer().getPosition().x + 60;
-        int y = this.getCurrentRoom().getPlayer().getPosition().y;
-        for(Block b: this.getCurrentRoom().getBlocks()){
-            if(y == b.getPosition().y && newX == b.getPosition().x) return b;
-        }
-        return null;
-    }
-
-    public Block colissionBlockLeft(){
-        int newX = this.getCurrentRoom().getPlayer().getPosition().x - 60;
-        int y = this.getCurrentRoom().getPlayer().getPosition().y;
-        for(Block b: this.getCurrentRoom().getBlocks()){
-            if(y == b.getPosition().y && newX == b.getPosition().x) return b;
-        }
-        return null;
-    }
-
-    public Block colissionBlockUp(){
-        int newY = this.getCurrentRoom().getPlayer().getPosition().y - 60;
-        int x = this.getCurrentRoom().getPlayer().getPosition().x;
-        for(Block b: this.getCurrentRoom().getBlocks()){
-            if(x == b.getPosition().x && newY == b.getPosition().y) return b;
-        }
-        return null;
+        this.CurrentRoom.update();
+        if (KeyHandler.KP_R) CurrentRoom = new Room(CurrentRoom.getId(),roomFiles[CurrentRoom.getId()], new Player(new Point(0, 0)));
+        if(win()) returnRoomSelector();
     }
 
     public boolean win(){
@@ -304,8 +164,7 @@ public class Game implements Runnable{
         }
         Player p = this.CurrentRoom.getPlayer();
         Door d = this.CurrentRoom.getDoor();
-        if(p.getPosition().x == d.getPosition().x && p.getPosition().y == d.getPosition().y) return true;
-        else return false;
+        return p.getPosition().x == d.getPosition().x && p.getPosition().y == d.getPosition().y;
     }
 
     public void returnRoomSelector(){
@@ -377,14 +236,6 @@ public class Game implements Runnable{
      */
     public void setGameThread(Thread gameThread) {
         this.gameThread = gameThread;
-    }
-
-    public Room[] getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(Room[] rooms) {
-        this.rooms = rooms;
     }
 
     public Room getCurrentRoom() {
