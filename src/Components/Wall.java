@@ -16,11 +16,6 @@ public class Wall extends GameObject{
     }
 
     @Override
-    public void update() {
-        
-    }
-
-    @Override
     public void paint(Graphics g) {
         g.drawImage(ImageHandler.get(this.getPath()), this.getPosition().x, this.getPosition().y
                 ,Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);

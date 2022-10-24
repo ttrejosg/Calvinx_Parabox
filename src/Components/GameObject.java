@@ -7,15 +7,13 @@ import java.awt.*;
  * @author Tomás
  */
 public abstract class GameObject {
-    private Point position;
-    private String path;
+    protected Point position;
+    protected String path;
 
     public GameObject(Point position, String path) {
         this.position = position;
         this.path = path;
     }
-    
-    abstract public void update();
 
     abstract public void paint(Graphics g);
 

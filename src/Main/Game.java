@@ -151,7 +151,8 @@ public class Game implements Runnable{
      */
     public void update(){
         this.CurrentRoom.update();
-        if (KeyHandler.KP_R) CurrentRoom = new Room(CurrentRoom.getId(),roomFiles[CurrentRoom.getId()], new Player(new Point(0, 0)));
+        if(KeyHandler.KP_R) CurrentRoom = new Room(CurrentRoom.getId(),roomFiles[CurrentRoom.getId()], new Player(new Point(0, 0)));
+        if(KeyHandler.KP_ESC) pause();
         if(win()) returnRoomSelector();
     }
 
@@ -168,6 +169,15 @@ public class Game implements Runnable{
         Player p = this.CurrentRoom.getPlayer();
         Door d = this.CurrentRoom.getDoor();
         return p.getPosition().x == d.getPosition().x && p.getPosition().y == d.getPosition().y;
+    }
+
+    public void pause(){
+        this.CurrentRoom.setBackground(PAUSE_BACKGROUND_PATH);
+        this.gPanel.getExit().setVisible(true);
+        this.gPanel.getBackToMenuButton().setVisible(true);
+        this.gPanel.getResumeButton().setVisible(true);
+        playing = false;
+        KeyHandler.KP_ESC = false;
     }
 
     public void returnRoomSelector(){

@@ -16,13 +16,8 @@ public class Door extends GameObject{
     }
 
     @Override
-    public void update() {
-
-    }
-
-    @Override
     public void paint(Graphics g) {
-        g.drawImage(ImageHandler.get(this.getPath()), this.getPosition().x, this.getPosition().y
+        g.drawImage(ImageHandler.get(this.path), this.position.x, this.position.y
                 ,Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
     }
 }

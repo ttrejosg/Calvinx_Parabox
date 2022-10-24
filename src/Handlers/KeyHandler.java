@@ -30,7 +30,6 @@ public class KeyHandler implements KeyListener{
         KT_A = e.getKeyChar() == 'a';
         KT_S = e.getKeyChar() == 's';
         KT_D = e.getKeyChar() == 'd';
-        KP_ESC = e.getKeyCode() == KeyEvent.VK_ESCAPE;
     }
 
     @Override
@@ -40,6 +39,7 @@ public class KeyHandler implements KeyListener{
         KP_S = e.getKeyChar() == 's';
         KP_D = e.getKeyChar() == 'd';
         KP_R = e.getKeyChar() == 'r';
+        KP_ESC = e.getKeyCode() == KeyEvent.VK_ESCAPE;
     }
 
     @Override

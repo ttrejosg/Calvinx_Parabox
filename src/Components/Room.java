@@ -24,19 +24,17 @@ public class Room {
     private ArrayList<Floor> floor;
     private Door door;
     private Player player;
-    private boolean passed;
     private File roomFile;
     private String background;
     private Tp tp1;
     private Tp tp2;
 
-    public Room(int id, File roomFile, Player player, String background) {
+    public Room(int id, File roomFile, Player player) {
         this.id = id;
         this.player = player;
         player.setRoom(this);
-        this.passed = false;
         this.roomFile = roomFile;
-        this.background = background;
+        this.background = Constants.BACKGROUND_PATH;
         createComponents();
         initRoom();
     }
@@ -124,15 +122,13 @@ public class Room {
     
     public void paint(Graphics g){
         g.drawImage(ImageHandler.get(this.background), 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, null);
-        for(Floor floor: this.floor){
-            g.drawImage(ImageHandler.get(floor.getPath()), floor.getPosition().x, floor.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
-        }
+        for(Floor floor: this.floor) floor.paint(g);
         for(Wall wall: this.walls) wall.paint(g);
         for(ReleaseZone rz: this.releaseZones) rz.paint(g);
         if(door != null) door.paint(g);
         for(Block block: this.blocks) block.paint(g);
-        if(tp1 != null) g.drawImage(ImageHandler.get(tp1.getPath()), tp1.getPosition().x, tp1.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
-        if(tp2 != null) g.drawImage(ImageHandler.get(tp2.getPath()), tp2.getPosition().x, tp2.getPosition().y, Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
+        if(tp1 != null) tp1.paint(g);
+        if(tp2 != null) tp2.paint(g);
         this.player.paint(g);
     }
 
@@ -235,20 +231,6 @@ public class Room {
      */
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    /**
-     * @return the passed
-     */
-    public boolean isPassed() {
-        return passed;
-    }
-
-    /**
-     * @param passed the passed to set
-     */
-    public void setPassed(boolean passed) {
-        this.passed = passed;
     }
 
     /**

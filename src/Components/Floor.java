@@ -5,15 +5,15 @@ import Handlers.ImageHandler;
 
 import java.awt.*;
 
-public class Tp extends GameObject{
-    Tp next;
-    public Tp(Point position, String path) {
+public class Floor extends GameObject{
+
+    public Floor(Point position, String path) {
         super(position, path);
     }
 
     @Override
     public void paint(Graphics g) {
-        g.drawImage(ImageHandler.get(this.getPath()), this.getPosition().x, this.getPosition().y,
+        g.drawImage(ImageHandler.get(this.path), this.position.x, this.position.y,
                 Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
     }
 }
