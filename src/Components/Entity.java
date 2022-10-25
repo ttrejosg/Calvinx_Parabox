@@ -17,13 +17,15 @@ public abstract class Entity extends GameObject {
     protected int state, anyIndex, anyTick, steps;
     protected Room room;
 
-    public Entity(Point position, String path) {
+    public Entity(Point position, String path, Room room) {
         super(position, path);
         this.state = 0; this.steps = 0; this.anyIndex = 0; this.anyTick = 0;
+        this.room = room;
         loadAnimations();
     }
 
     public abstract void update();
+    public abstract void resetState();
 
     /**
      * Método que carga las animaciones del jugador.
@@ -78,13 +80,6 @@ public abstract class Entity extends GameObject {
         else if(this.state == 3) this.getPosition().translate(0,speed);
         else if(this.state == 4) this.getPosition().translate(-speed,0);
         this.steps +=3;
-    }
-
-    public void updateState(){
-        if(KeyHandler.KT_W) this.state = 1;
-        else if(KeyHandler.KT_D) this.state = 2;
-        else if(KeyHandler.KT_S) this.state = 3;
-        else if(KeyHandler.KT_A) this.state = 4;
     }
     public GameObject checkCollision(){
         GameObject gObject = null;

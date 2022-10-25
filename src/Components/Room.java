@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.security.Key;
 import java.util.ArrayList;
+import static Handlers.Constants.*;
 
 /**
  *
@@ -24,15 +25,17 @@ public class Room {
     private ArrayList<Floor> floor;
     private Door door;
     private Player player;
+    private Enemy enemy;
     private File roomFile;
     private String background;
-    private Tp tp1;
-    private Tp tp2;
+    private Tp tp;
 
-    public Room(int id, File roomFile, Player player) {
+    public Room(int id, File roomFile, Player player, Enemy enemy) {
         this.id = id;
         this.player = player;
-        player.setRoom(this);
+        this.player.setRoom(this);
+        this.enemy = enemy;
+        this.enemy.setRoom(this);
         this.roomFile = roomFile;
         this.background = Constants.BACKGROUND_PATH;
         createComponents();
@@ -95,18 +98,25 @@ public class Room {
                     } else if (linea.charAt(j) == 'r') {
                         this.releaseZones.add(new ReleaseZone(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.RELEASEZONE_PATH));
                     } else if (linea.charAt(j) == 'b') {
-                        this.blocks.add(new Block(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.BLOCK_PATH));
+                        this.blocks.add(new Block(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.BLOCK_PATH,this));
                         this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
                     } else if (linea.charAt(j) == 'd') {
                         this.door = new Door(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.DOOR_PATH);
-                    }  else if (linea.charAt(j) == 'p') {
-                        this.player.setPosition(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE));
-                        this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
                     } else if (linea.charAt(j) == '#') {
                         this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
-                    }else if (linea.charAt(j) == 't') {
-                        if(tp1 == null) tp1 = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
-                        else tp2 = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
+                    } else if (linea.charAt(j) == 't') {
+                        if(tp == null) tp = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
+                        else{
+                            Tp new_tp = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
+                            new_tp.next = this.tp;
+                            this.tp.next = new_tp;
+                        }
+                    } else if (linea.charAt(j) == 'p') {
+                        this.player.setPosition(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE));
+                        this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
+                    }  else if (linea.charAt(j) == 'e') {
+                        this.enemy.setPosition(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE));
+                        this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
                     }
                 }
             }
@@ -117,7 +127,9 @@ public class Room {
     }
     
     public void update(){
+        for(Block block: this.blocks) block.update();
         this.player.update();
+        this.enemy.update();
     }
     
     public void paint(Graphics g){
@@ -127,9 +139,8 @@ public class Room {
         for(ReleaseZone rz: this.releaseZones) rz.paint(g);
         if(door != null) door.paint(g);
         for(Block block: this.blocks) block.paint(g);
-        if(tp1 != null) tp1.paint(g);
-        if(tp2 != null) tp2.paint(g);
         this.player.paint(g);
+        this.enemy.paint(g);
     }
 
     public GameObject getObjectAt(int x,int y){
@@ -137,15 +148,27 @@ public class Room {
         int i = 0;
         while(i < walls.size()  && gObject == null){
             Wall wall =  walls.get(i);
-            if(wall.getPosition().x == x && wall.getPosition().y == y) gObject = wall;
+            if(wall.getPosition().x >= x  && wall.getPosition().x < x+BLOCKS_SIZE
+                    && wall.getPosition().y >= y && wall.getPosition().y < y+BLOCKS_SIZE) gObject = wall;
             i ++;
         }
         i=0;
         while(i < blocks.size() && gObject == null){
             Block block =  blocks.get(i);
-            if(block.getPosition().x == x && block.getPosition().y == y) gObject = block;
+            if(block.getPosition().x >= x  && block.getPosition().x < x+BLOCKS_SIZE
+                    && block.getPosition().y >= y && block.getPosition().y < y+BLOCKS_SIZE) gObject = block;
             i ++;
         }
+        if(this.tp != null){
+            if(tp.getPosition().x >= x  && tp.getPosition().x <= x+BLOCKS_SIZE
+                    && tp.getPosition().y >= y && tp.getPosition().y < y+BLOCKS_SIZE) gObject = this.tp;
+            if(tp.next.getPosition().x >= x  && tp.next.getPosition().x < x+BLOCKS_SIZE
+                    && tp.next.getPosition().y >= y && tp.next.getPosition().y < y+BLOCKS_SIZE) gObject = this.tp.next;
+        }
+        if(player.getPosition().x >= x  && player.getPosition().x < x+BLOCKS_SIZE
+                && player.getPosition().y >= y && player.getPosition().y < y+BLOCKS_SIZE) gObject = this.player;
+        if(enemy.getPosition().x >= x  && enemy.getPosition().x < x+BLOCKS_SIZE
+                && enemy.getPosition().y >= y && enemy.getPosition().y < y+BLOCKS_SIZE) gObject = this.enemy;
         return gObject;
     }
 
@@ -245,5 +268,21 @@ public class Room {
      */
     public void setBackground(String background) {
         this.background = background;
+    }
+
+    public File getRoomFile() {
+        return roomFile;
+    }
+
+    public void setRoomFile(File roomFile) {
+        this.roomFile = roomFile;
+    }
+
+    public Enemy getEnemy() {
+        return enemy;
+    }
+
+    public void setEnemy(Enemy enemy) {
+        this.enemy = enemy;
     }
 }

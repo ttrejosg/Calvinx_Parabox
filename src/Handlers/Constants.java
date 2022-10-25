@@ -33,8 +33,9 @@ public class Constants {
     public static final String TUNELHORIZONTAL_PATH = "tunel_horizontal.png"; // h
     public static final String RELEASEZONE_PATH = "releaseZone.png"; // r
     public static final String DETOURRIGHT_PATH = "detour_right.png"; // i
-    public static final String BLOCK_PATH = "block.png"; // b
+    public static final String BLOCK_PATH = "block_sprites.png"; // b
     public static final String DOOR_PATH = "door.png"; // d
     public static final String TP_PATH = "Tp.png"; // t
+    public static final String ENEMY_PATH = "enemy_sprites.png"; // e
 }
 

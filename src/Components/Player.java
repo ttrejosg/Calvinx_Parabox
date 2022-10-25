@@ -17,8 +17,8 @@ import static Handlers.Constants.*;
  */
 public class Player extends Entity{
 
-    public Player(Point position) {
-        super(position, "player_sprites.png");
+    public Player(Point position, Room room) {
+        super(position, "player_sprites.png", room);
     }
 
     /**
@@ -34,13 +34,24 @@ public class Player extends Entity{
                 if(collision == null){
                     move(3);
                 }else if(collision instanceof Block){
+                    ((Block)collision).setState(this.state);
                     ((Block)collision).update();
-                    move(3);
-                } else resetState();
+                    if(((Block)collision).state != 0) move(3);
+                    else resetState();
+                } else if(collision instanceof Tp) this.position.setLocation(((Tp) collision).next.position);
+                else resetState();
             } else move(3);
         } else resetState();
     }
 
+    public void updateState(){
+        if(KeyHandler.KT_W) this.state = 1;
+        else if(KeyHandler.KT_D) this.state = 2;
+        else if(KeyHandler.KT_S) this.state = 3;
+        else if(KeyHandler.KT_A) this.state = 4;
+    }
+
+    @Override
     public void resetState(){
         this.steps = 0;
         this.state = 0;

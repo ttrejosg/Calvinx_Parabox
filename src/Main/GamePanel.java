@@ -109,7 +109,6 @@ public class GamePanel extends JPanel{
         super.paintComponent(g);
         game.getCurrentRoom().paint(g);
         SwingUtilities.updateComponentTreeUI(this.game.getgWindow());
-        game.getCurrentRoom().getPlayer().paint(g);
     }
 
     /**

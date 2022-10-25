@@ -80,7 +80,8 @@ public class Game implements Runnable{
             roomButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    CurrentRoom = new Room(finalI,roomFiles[finalI], new Player(new Point(0, 0)));
+                    CurrentRoom = new Room(finalI,roomFiles[finalI]
+                            ,new Player(new Point(0, 0),null), new Enemy(new Point(0,0),null));
                     initGameThread();
                 }
             });
@@ -151,9 +152,14 @@ public class Game implements Runnable{
      */
     public void update(){
         this.CurrentRoom.update();
-        if(KeyHandler.KP_R) CurrentRoom = new Room(CurrentRoom.getId(),roomFiles[CurrentRoom.getId()], new Player(new Point(0, 0)));
-        if(KeyHandler.KP_ESC) pause();
-        if(win()) returnRoomSelector();
+        if(KeyHandler.KP_R){
+            this.getCurrentRoom().getEnemy().resetState();
+            this.CurrentRoom.getPlayer().resetState();
+            this.CurrentRoom = new Room(this.CurrentRoom.getId(),this.CurrentRoom.getRoomFile()
+                    ,this.CurrentRoom.getPlayer(),this.CurrentRoom.getEnemy());
+        }
+        else if(KeyHandler.KP_ESC) pause();
+        else if(win()) returnRoomSelector();
     }
 
     public boolean win(){

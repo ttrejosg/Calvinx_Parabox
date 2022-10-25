@@ -1,5 +1,7 @@
 package Main;
 
+import java.util.Random;
+
 /**
  *
  * @author Tomás y Carlos
