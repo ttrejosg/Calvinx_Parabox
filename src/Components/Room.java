@@ -3,6 +3,8 @@ package Components;
 import Handlers.Constants;
 import Handlers.ImageHandler;
 import Handlers.KeyHandler;
+import Main.Game;
+import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -125,6 +127,16 @@ public class Room {
             System.out.println("Error");
         }
     }
+
+    public void reset(){
+        this.blocks.clear();
+        this.walls.clear();
+        this.releaseZones.clear();
+        this.floor.clear();
+        this.player.resetState();
+        this.enemy.resetState();
+        initRoom();
+    }
     
     public void update(){
         for(Block block: this.blocks) block.update();
@@ -133,42 +145,38 @@ public class Room {
     }
     
     public void paint(Graphics g){
-        g.drawImage(ImageHandler.get(this.background), 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, null);
-        for(Floor floor: this.floor) floor.paint(g);
-        for(Wall wall: this.walls) wall.paint(g);
-        for(ReleaseZone rz: this.releaseZones) rz.paint(g);
-        if(door != null) door.paint(g);
-        for(Block block: this.blocks) block.paint(g);
-        this.player.paint(g);
-        this.enemy.paint(g);
+        try{
+            g.drawImage(ImageHandler.get(this.background), 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, null);
+            for(Floor floor: this.floor) floor.paint(g);
+            for(Wall wall: this.walls) wall.paint(g);
+            for(ReleaseZone rz: this.releaseZones) rz.paint(g);
+            if(door != null) door.paint(g);
+            for(Block block: this.blocks) block.paint(g);
+            this.player.paint(g);
+            this.enemy.paint(g);
+        }catch (Exception e){
+            System.out.println("Error de libreria");
+        }
     }
 
-    public GameObject getObjectAt(int x,int y){
+    public GameObject intersects(Rectangle collisionBox){
         GameObject gObject = null;
         int i = 0;
-        while(i < walls.size()  && gObject == null){
-            Wall wall =  walls.get(i);
-            if(wall.getPosition().x >= x  && wall.getPosition().x < x+BLOCKS_SIZE
-                    && wall.getPosition().y >= y && wall.getPosition().y < y+BLOCKS_SIZE) gObject = wall;
-            i ++;
+        while(i < this.walls.size() && gObject == null){
+            if(this.walls.get(i).getCollisionBox().intersects(collisionBox)) gObject = this.walls.get(i);
+            i++;
         }
         i=0;
-        while(i < blocks.size() && gObject == null){
-            Block block =  blocks.get(i);
-            if(block.getPosition().x >= x  && block.getPosition().x < x+BLOCKS_SIZE
-                    && block.getPosition().y >= y && block.getPosition().y < y+BLOCKS_SIZE) gObject = block;
+        while(i < this.blocks.size() && gObject == null){
+            if(this.blocks.get(i).getCollisionBox().intersects(collisionBox)) gObject = this.blocks.get(i);
             i ++;
         }
         if(this.tp != null){
-            if(tp.getPosition().x >= x  && tp.getPosition().x <= x+BLOCKS_SIZE
-                    && tp.getPosition().y >= y && tp.getPosition().y < y+BLOCKS_SIZE) gObject = this.tp;
-            if(tp.next.getPosition().x >= x  && tp.next.getPosition().x < x+BLOCKS_SIZE
-                    && tp.next.getPosition().y >= y && tp.next.getPosition().y < y+BLOCKS_SIZE) gObject = this.tp.next;
+            if(this.tp.getCollisionBox().intersects(collisionBox)) gObject = this.tp;
+            if(this.tp.next.getCollisionBox().intersects(collisionBox)) gObject = this.tp.next;
         }
-        if(player.getPosition().x >= x  && player.getPosition().x < x+BLOCKS_SIZE
-                && player.getPosition().y >= y && player.getPosition().y < y+BLOCKS_SIZE) gObject = this.player;
-        if(enemy.getPosition().x >= x  && enemy.getPosition().x < x+BLOCKS_SIZE
-                && enemy.getPosition().y >= y && enemy.getPosition().y < y+BLOCKS_SIZE) gObject = this.enemy;
+        if(this.player.getCollisionBox().intersects(collisionBox)) gObject = this.player;
+        else if(this.enemy.getCollisionBox().intersects(collisionBox)) gObject = this.enemy;
         return gObject;
     }
 
@@ -284,5 +292,21 @@ public class Room {
 
     public void setEnemy(Enemy enemy) {
         this.enemy = enemy;
+    }
+
+    public ArrayList<Floor> getFloor() {
+        return floor;
+    }
+
+    public void setFloor(ArrayList<Floor> floor) {
+        this.floor = floor;
+    }
+
+    public Tp getTp() {
+        return tp;
+    }
+
+    public void setTp(Tp tp) {
+        this.tp = tp;
     }
 }

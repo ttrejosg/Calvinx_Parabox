@@ -33,24 +33,17 @@ public class Player extends Entity{
         if(this.state == 0) updateState();
         else if(this.steps < 60){
             if(this.steps == 0){
-                collision();
+                GameObject collision = checkCollision();
+                if(collision == null) move(3);
+                else if(collision instanceof Block && ((Block) collision).state == 0){
+                    ((Block)collision).setState(this.state);
+                    ((Block)collision).update();
+                    if(((Block)collision).state != 0) move(3);
+                    else resetState();
+                } else if(collision instanceof Tp) this.setPosition(((Tp) collision).next.position);
+                else if (collision instanceof Enemy) KeyHandler.KP_R = true;
+                else resetState();
             } else move(3);
-        } else resetState();
-    }
-
-    public void collision(){
-        GameObject collision = checkCollision();
-        if(collision == null){
-            move(3);
-        }else if(collision instanceof Block){
-            ((Block)collision).setState(this.state);
-            ((Block)collision).update();
-            if(((Block)collision).state != 0) move(3);
-            else resetState();
-        } else if(collision instanceof Tp) {
-            Clip clip = SoundHandler.createClip(SoundHandler.get("Tp.wav"));
-            clip.start();
-            this.position.setLocation(((Tp) collision).next.position);
         } else resetState();
     }
 
@@ -70,4 +63,6 @@ public class Player extends Entity{
         KeyHandler.KT_S = false;
         KeyHandler.KT_D = false;
     }
+
+
 }
