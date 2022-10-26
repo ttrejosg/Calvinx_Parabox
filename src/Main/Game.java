@@ -83,6 +83,8 @@ public class Game implements Runnable{
                 public void actionPerformed(ActionEvent e) {
                     CurrentRoom = new Room(finalI,roomFiles[finalI]
                             ,new Player(new Point(0, 0),null), new Enemy(new Point(0,0),null));
+                    Clip clip = SoundHandler.createClip(SoundHandler.get("Room_Select.wav"));
+                    clip.start();
                     initGameThread();
                 }
             });
@@ -153,7 +155,11 @@ public class Game implements Runnable{
         this.CurrentRoom.update();
         if(KeyHandler.KP_R) this.playing = false;
         else if(KeyHandler.KP_ESC) pause();
-        else if(win()) returnRoomSelector();
+        else if(win()) {
+            Clip clip = SoundHandler.createClip(SoundHandler.get("Win.wav"));
+            clip.start();
+            returnRoomSelector();
+        }
     }
 
     public boolean win(){
@@ -172,6 +178,8 @@ public class Game implements Runnable{
     }
 
     public void pause(){
+        Clip clip = SoundHandler.createClip(SoundHandler.get("Pause.wav"));
+        clip.start();
         this.CurrentRoom.setBackground(PAUSE_BACKGROUND_PATH);
         this.gPanel.getExit().setVisible(true);
         this.gPanel.getBackToMenuButton().setVisible(true);
@@ -181,6 +189,8 @@ public class Game implements Runnable{
     }
 
     public void resetRoom(){
+        Clip clip = SoundHandler.createClip(SoundHandler.get("Reset.wav"));
+        clip.start();
         this.CurrentRoom.reset();
         this.playing = true;
         KeyHandler.KP_R = false;

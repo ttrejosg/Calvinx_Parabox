@@ -2,6 +2,7 @@ package Components;
 
 import Handlers.Constants;
 import Handlers.KeyHandler;
+import Handlers.SoundHandler;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -9,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.Clip;
+
 import static Handlers.Constants.*;
 
 /**
@@ -31,9 +34,8 @@ public class Player extends Entity{
         else if(this.steps < 60){
             if(this.steps == 0){
                 GameObject collision = checkCollision();
-                if(collision == null){
-                    move(3);
-                }else if(collision instanceof Block && ((Block) collision).state == 0){
+                if(collision == null) move(3);
+                else if(collision instanceof Block && ((Block) collision).state == 0){
                     ((Block)collision).setState(this.state);
                     ((Block)collision).update();
                     if(((Block)collision).state != 0) move(3);

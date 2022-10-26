@@ -1,9 +1,5 @@
 package Components;
 
-import Handlers.Constants;
-import Handlers.ImageHandler;
-import Handlers.KeyHandler;
-import static Handlers.Constants.*;
 import java.awt.*;
 
 /**
@@ -21,9 +17,8 @@ public class Block extends Entity{
         if(this.steps < 60 && this.state != 0){
             if(this.steps == 0){
                 GameObject collision = checkCollision();
-                if(collision == null){
-                    move(3);
-                }else if(collision instanceof Block && ((Block) collision).state == 0){
+                if(collision == null) move(3);
+                else if(collision instanceof Block && ((Block) collision).state == 0){
                     ((Block)collision).setState(this.state);
                     ((Block)collision).update();
                     if(((Block)collision).state != 0) move(3);

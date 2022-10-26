@@ -3,7 +3,9 @@ package Main;
 import GUI.Menu;
 import GUI.RoomSelector;
 import Handlers.KeyHandler;
+import Handlers.SoundHandler;
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -86,6 +88,8 @@ public class GameWindow extends JFrame{
         this.menu.getPlayButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Clip clip = SoundHandler.createClip(SoundHandler.get("Button.wav"));
+                clip.start();
                 menu.setEnabled(false);
                 menu.setVisible(false);
                 roomSelector.setEnabled(true);
@@ -101,6 +105,8 @@ public class GameWindow extends JFrame{
         this.menu.getQuitButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Clip clip = SoundHandler.createClip(SoundHandler.get("Button.wav"));
+                clip.start();
                 System.exit(0);
             }
         });
