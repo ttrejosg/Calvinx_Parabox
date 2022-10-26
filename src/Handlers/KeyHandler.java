@@ -38,7 +38,7 @@ public class KeyHandler implements KeyListener{
         KP_A = e.getKeyChar() == 'a';
         KP_S = e.getKeyChar() == 's';
         KP_D = e.getKeyChar() == 'd';
-        KP_R = e.getKeyChar() == 'r';
+        if(e.getKeyChar() == 'r') KP_R = true;
         KP_ESC = e.getKeyCode() == KeyEvent.VK_ESCAPE;
     }
 

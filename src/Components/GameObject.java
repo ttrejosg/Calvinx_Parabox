@@ -1,6 +1,7 @@
 package Components;
 
 import java.awt.*;
+import static Handlers.Constants.*;
 
 /**
  *
@@ -9,9 +10,11 @@ import java.awt.*;
 public abstract class GameObject {
     protected Point position;
     protected String path;
+    protected Rectangle collisionBox;
 
     public GameObject(Point position, String path) {
         this.position = position;
+        this.collisionBox = new Rectangle(position.x,position.y,BLOCKS_SIZE,BLOCKS_SIZE);
         this.path = path;
     }
 
@@ -28,7 +31,8 @@ public abstract class GameObject {
      * @param position the position to set
      */
     public void setPosition(Point position) {
-        this.position = position;
+        this.position.setLocation(position.x,position.y);
+        this.collisionBox.setLocation(position.x,position.y);
     }
 
     /**
@@ -43,5 +47,13 @@ public abstract class GameObject {
      */
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Rectangle getCollisionBox() {
+        return collisionBox;
+    }
+
+    public void setCollisionBox(Rectangle collisionBox) {
+        this.collisionBox = collisionBox;
     }
 }

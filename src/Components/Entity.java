@@ -49,7 +49,7 @@ public abstract class Entity extends GameObject {
         try {
             img = ImageIO.read(is);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
         } finally {
             try {
                 is.close();
@@ -75,20 +75,33 @@ public abstract class Entity extends GameObject {
     }
 
     public void move(int speed){
-        if(this.state == 1) this.getPosition().translate(0,-speed);
-        else if(this.state == 2) this.getPosition().translate(speed,0);
-        else if(this.state == 3) this.getPosition().translate(0,speed);
-        else if(this.state == 4) this.getPosition().translate(-speed,0);
-        this.steps +=3;
+        if(this.state == 1){
+            this.position.translate(0,-speed);
+            this.collisionBox.translate(0,-speed);
+        }
+        else if(this.state == 2){
+            this.position.translate(speed,0);
+            this.collisionBox.translate(speed,0);
+        }
+        else if(this.state == 3){
+            this.position.translate(0,speed);
+            this.collisionBox.translate(0,speed);
+        }
+        else if(this.state == 4){
+            this.position.translate(-speed,0);
+            this.collisionBox.translate(-speed,0);
+        }
+        this.steps +=speed;
     }
-    public GameObject checkCollision(){
-        GameObject gObject = null;
-        if(this.state == 1) gObject = this.room.getObjectAt(this.getPosition().x,this.getPosition().y-BLOCKS_SIZE);
-        else if(this.state == 2) gObject = this.room.getObjectAt(this.getPosition().x+BLOCKS_SIZE,this.getPosition().y);
-        else if(this.state == 3) gObject = this.room.getObjectAt(this.getPosition().x,this.getPosition().y+BLOCKS_SIZE);
-        else if(this.state == 4) gObject = this.room.getObjectAt(this.getPosition().x-BLOCKS_SIZE,this.getPosition().y);
-        return gObject;
 
+
+    public GameObject checkCollision(){
+        GameObject collision = null;
+        if(this.state == 1) collision = this.room.intersects(new Rectangle(this.position.x,this.position.y-BLOCKS_SIZE,BLOCKS_SIZE,BLOCKS_SIZE));
+        else if(this.state == 2) collision = this.room.intersects(new Rectangle(this.position.x+BLOCKS_SIZE,this.position.y,BLOCKS_SIZE,BLOCKS_SIZE));
+        else if(this.state == 3) collision = this.room.intersects(new Rectangle(this.position.x,this.position.y+BLOCKS_SIZE,BLOCKS_SIZE,BLOCKS_SIZE));
+        else if(this.state == 4) collision = this.room.intersects(new Rectangle(this.position.x-BLOCKS_SIZE,this.position.y,BLOCKS_SIZE,BLOCKS_SIZE));
+        return collision;
     }
 
     /**
@@ -149,4 +162,5 @@ public abstract class Entity extends GameObject {
     public void setRoom(Room room) {
         this.room = room;
     }
+
 }

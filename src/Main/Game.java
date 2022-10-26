@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.security.Key;
 import java.util.ArrayList;
 
 /**
@@ -110,13 +111,10 @@ public class Game implements Runnable{
     public void run() {
         double timePerFrame = 1000000000.0 / FPS_SET;
         double timePerUpdate = 1000000000.0 / UPS_SET;
-
         long previousTime = System.nanoTime();
-
         int frames = 0;
         int updates = 0;
         long lastCheck = System.currentTimeMillis();
-
         double deltaU = 0;
         double deltaF = 0;
 
@@ -145,6 +143,7 @@ public class Game implements Runnable{
                 }
             }
         }
+        if(KeyHandler.KP_R) resetRoom();
     }
     
     /**
@@ -152,12 +151,7 @@ public class Game implements Runnable{
      */
     public void update(){
         this.CurrentRoom.update();
-        if(KeyHandler.KP_R){
-            this.getCurrentRoom().getEnemy().resetState();
-            this.CurrentRoom.getPlayer().resetState();
-            this.CurrentRoom = new Room(this.CurrentRoom.getId(),this.CurrentRoom.getRoomFile()
-                    ,this.CurrentRoom.getPlayer(),this.CurrentRoom.getEnemy());
-        }
+        if(KeyHandler.KP_R) this.playing = false;
         else if(KeyHandler.KP_ESC) pause();
         else if(win()) returnRoomSelector();
     }
@@ -184,6 +178,13 @@ public class Game implements Runnable{
         this.gPanel.getResumeButton().setVisible(true);
         playing = false;
         KeyHandler.KP_ESC = false;
+    }
+
+    public void resetRoom(){
+        this.CurrentRoom.reset();
+        this.playing = true;
+        KeyHandler.KP_R = false;
+        this.gameThread.run();
     }
 
     public void returnRoomSelector(){
