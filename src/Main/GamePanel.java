@@ -2,12 +2,14 @@ package Main;
 
 import Handlers.Constants;
 import Handlers.ImageHandler;
+import Handlers.SoundHandler;
 
 import static Handlers.Constants.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 /**
@@ -47,6 +49,8 @@ public class GamePanel extends JPanel{
         this.exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Clip clip = SoundHandler.createClip(SoundHandler.get("Button.wav"));
+                clip.start();
                 System.exit(0);
             }
         });
@@ -62,16 +66,7 @@ public class GamePanel extends JPanel{
         this.backToMenuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.getCurrentRoom().setBackground(BACKGROUND_PATH);
-                backToMenuButton.setVisible(false);
-                exit.setVisible(false);
-                resumeButton.setVisible(false);
-                game.getgWindow().setFocusable(true);
-                game.getgWindow().requestFocus();
-                game.getgPanel().setVisible(false);
-                game.getCurrentRoom().initRoom();
-                game.getgWindow().getRoomSelector().setEnabled(true);
-                game.getgWindow().getRoomSelector().setVisible(true);
+                backToMenu();
             }
         });
         this.add(this.backToMenuButton);
@@ -86,18 +81,39 @@ public class GamePanel extends JPanel{
         this.resumeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.getCurrentRoom().setBackground(BACKGROUND_PATH);
-                backToMenuButton.setVisible(false);
-                exit.setVisible(false);
-                resumeButton.setVisible(false);
-                game.getgWindow().setFocusable(true);
-                game.getgWindow().requestFocus();
-                game.setGameThread(new Thread(game));
-                game.setPlaying(true);
-                game.getGameThread().start();
+                resume();
             }
         });
         this.add(resumeButton);
+    }
+
+    public void backToMenu(){
+        Clip clip = SoundHandler.createClip(SoundHandler.get("Back_to_menu.wav"));
+        clip.start();
+        game.getCurrentRoom().setBackground(BACKGROUND_PATH);
+        backToMenuButton.setVisible(false);
+        exit.setVisible(false);
+        resumeButton.setVisible(false);
+        game.getgWindow().setFocusable(true);
+        game.getgWindow().requestFocus();
+        game.getgPanel().setVisible(false);
+        game.getCurrentRoom().initRoom();
+        game.getgWindow().getRoomSelector().setEnabled(true);
+        game.getgWindow().getRoomSelector().setVisible(true);
+    }
+
+    public void resume(){
+        Clip clip = SoundHandler.createClip(SoundHandler.get("Resume.wav"));
+        clip.start();
+        game.getCurrentRoom().setBackground(BACKGROUND_PATH);
+        backToMenuButton.setVisible(false);
+        exit.setVisible(false);
+        resumeButton.setVisible(false);
+        game.getgWindow().setFocusable(true);
+        game.getgWindow().requestFocus();
+        game.setGameThread(new Thread(game));
+        game.setPlaying(true);
+        game.getGameThread().start();
     }
 
     /**

@@ -2,6 +2,7 @@ package Components;
 
 import Handlers.Constants;
 import Handlers.KeyHandler;
+import Handlers.SoundHandler;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -9,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.Clip;
+
 import static Handlers.Constants.*;
 
 /**
@@ -30,17 +33,24 @@ public class Player extends Entity{
         if(this.state == 0) updateState();
         else if(this.steps < 60){
             if(this.steps == 0){
-                GameObject collision = checkCollision();
-                if(collision == null){
-                    move(3);
-                }else if(collision instanceof Block){
-                    ((Block)collision).setState(this.state);
-                    ((Block)collision).update();
-                    if(((Block)collision).state != 0) move(3);
-                    else resetState();
-                } else if(collision instanceof Tp) this.position.setLocation(((Tp) collision).next.position);
-                else resetState();
+                collision();
             } else move(3);
+        } else resetState();
+    }
+
+    public void collision(){
+        GameObject collision = checkCollision();
+        if(collision == null){
+            move(3);
+        }else if(collision instanceof Block){
+            ((Block)collision).setState(this.state);
+            ((Block)collision).update();
+            if(((Block)collision).state != 0) move(3);
+            else resetState();
+        } else if(collision instanceof Tp) {
+            Clip clip = SoundHandler.createClip(SoundHandler.get("Tp.wav"));
+            clip.start();
+            this.position.setLocation(((Tp) collision).next.position);
         } else resetState();
     }
 

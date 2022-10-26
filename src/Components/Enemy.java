@@ -14,9 +14,8 @@ public class Enemy extends Entity{
     public void update() {
         if (this.state == 0) randomState();
         GameObject collision = checkCollision();
-        if (collision == null) {
-            move(1);
-        } else if (collision instanceof Block) {
+        if (collision == null) move(1);
+        else if (collision instanceof Block) {
             ((Block) collision).setState(this.state);
             ((Block) collision).update();
             resetState();
