@@ -1,7 +1,9 @@
 package Main;
 
+import java.util.Random;
+
 /**
- *
+ * Punto de entrada del programa de java.
  * @author Tomás y Carlos
  */
 public class Main {

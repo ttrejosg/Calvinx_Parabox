@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- *
+ * Clase que se encarga del manejo de los archivos de imagen.
  * @author Tomás
  */
 public class ImageHandler {
