@@ -15,7 +15,7 @@ public class Tp extends GameObject{
 
     //Attributes:
 
-    Tp next;
+    private Tp next;
 
     //Constructors:
 
@@ -31,4 +31,11 @@ public class Tp extends GameObject{
                 Constants.BLOCKS_SIZE, Constants.BLOCKS_SIZE, null);
     }
 
+    public Tp getNext() {
+        return next;
+    }
+
+    public void setNext(Tp next) {
+        this.next = next;
+    }
 }

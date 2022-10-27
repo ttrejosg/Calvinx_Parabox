@@ -115,6 +115,12 @@ public class Room {
                         this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TUNELHORIZONTAL_PATH));
                     } else if (linea.charAt(j) == 'i') {
                         this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.DETOURRIGHT_PATH));
+                    } else if (linea.charAt(j) == 'o') {
+                        this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.DETOURLEFT_PATH));
+                    } else if (linea.charAt(j) == 'k') {
+                        this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.DETOURUP_PATH));
+                    } else if (linea.charAt(j) == 'j') {
+                        this.walls.add(new Wall(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.DETOURDOWN_PATH));
                     } else if (linea.charAt(j) == 'r') {
                         this.releaseZones.add(new ReleaseZone(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.RELEASEZONE_PATH));
                     } else if (linea.charAt(j) == 'b') {
@@ -128,10 +134,21 @@ public class Room {
                         if(tp == null) tp = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
                         else{
                             Tp new_tp = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
-                            new_tp.next = this.tp;
-                            this.tp.next = new_tp;
+                            new_tp.setNext(this.tp);
+                            this.tp.setNext(new_tp);
                         }
-                    } else if (linea.charAt(j) == 'p') {
+                    }  else if (linea.charAt(j) == 'q') {
+                        if(tp == null) {
+                            tp = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
+                            this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
+                        }
+                        else{
+                            Tp new_tp = new Tp(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.TP_PATH);
+                            this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
+                            new_tp.setNext(this.tp);
+                            this.tp.setNext(new_tp);
+                        }
+                    }else if (linea.charAt(j) == 'p') {
                         this.player.setPosition(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE));
                         this.floor.add(new Floor(new Point(j * Constants.BLOCKS_SIZE, i * Constants.BLOCKS_SIZE), Constants.FLOOR_PATH));
                     }  else if (linea.charAt(j) == 'e') {
@@ -202,7 +219,7 @@ public class Room {
         }
         if(this.tp != null){
             if(this.tp.getCollisionBox().intersects(collisionBox)) gObject = this.tp;
-            if(this.tp.next.getCollisionBox().intersects(collisionBox)) gObject = this.tp.next;
+            if(this.tp.getNext().getCollisionBox().intersects(collisionBox)) gObject = this.tp.getNext();
         }
         if(this.player.getCollisionBox().intersects(collisionBox)) gObject = this.player;
         else if(this.enemy.getCollisionBox().intersects(collisionBox)) gObject = this.enemy;

@@ -34,7 +34,7 @@ public class Player extends Entity{
                     else resetState();
                 } else if(collision instanceof Tp) {
                     SoundHandler.createClip(SoundHandler.get("Tp.wav")).start();
-                    this.setPosition(((Tp) collision).next.position);
+                    this.setPosition(((Tp) collision).getNext().position);
                 } else if (collision instanceof Enemy) KeyHandler.KP_R = true;
                 else resetState();
             } else move(3);

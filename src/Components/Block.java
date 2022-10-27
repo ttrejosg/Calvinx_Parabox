@@ -30,7 +30,7 @@ public class Block extends Entity{
                     else resetState();
                 } else if(collision instanceof Tp) {
                     SoundHandler.createClip(SoundHandler.get("Tp.wav")).start();
-                    this.setPosition(((Tp) collision).next.position);
+                    this.setPosition(((Tp) collision).getNext().position);
                 }
                 else resetState();
             } else move(3);
