@@ -5,11 +5,19 @@ import Handlers.ImageHandler;
 
 import java.awt.*;
 
+/**
+ * Clase que representa el suelo del juego.
+ * @author: Tomás y Carlos.
+ */
 public class Floor extends GameObject{
+
+    //Constructor
 
     public Floor(Point position, String path) {
         super(position, path);
     }
+
+    //Methods:
 
     @Override
     public void paint(Graphics g) {

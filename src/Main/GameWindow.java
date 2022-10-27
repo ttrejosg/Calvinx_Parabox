@@ -4,25 +4,32 @@ import GUI.Menu;
 import GUI.RoomSelector;
 import Handlers.KeyHandler;
 import Handlers.SoundHandler;
-
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- *
- * @author Tomás
+ * Clase que representa la ventana donde se ejecuta el hilo del juego.
+ * La ventana posee:
+ * Un {@link Menu} 'menu' que es el menu de inicio del juego.
+ * Un {@link RoomSelector} 'roomSelector' que es el menu de seleccion de salas.
+ * @author Tomás y Carlos
  */
 public class GameWindow extends JFrame{
 
+    //Attributes:
+
     private Menu menu;
     private RoomSelector roomSelector;
+
+    //Constructors:
 
     public GameWindow() {
         createComponents();
         initComponents();
     }
+
+    //Methods:
 
     /**
      * Método que crea todos los componentes de la clase
@@ -50,7 +57,7 @@ public class GameWindow extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addKeyListener(new KeyHandler());
         this.setResizable(false);
-        //this.setUndecorated(true);
+        this.setUndecorated(true);
     }
 
     /**
@@ -88,8 +95,7 @@ public class GameWindow extends JFrame{
         this.menu.getPlayButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Clip clip = SoundHandler.createClip(SoundHandler.get("Button.wav"));
-                clip.start();
+                SoundHandler.createClip(SoundHandler.get("Button.wav")).start();
                 menu.setEnabled(false);
                 menu.setVisible(false);
                 roomSelector.setEnabled(true);
@@ -105,8 +111,7 @@ public class GameWindow extends JFrame{
         this.menu.getQuitButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Clip clip = SoundHandler.createClip(SoundHandler.get("Button.wav"));
-                clip.start();
+                SoundHandler.createClip(SoundHandler.get("Button.wav")).start();
                 System.exit(0);
             }
         });
@@ -119,17 +124,19 @@ public class GameWindow extends JFrame{
         ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                SoundHandler.createClip(SoundHandler.get("Button.wav")).start();
                 roomSelector.setEnabled(false);
                 roomSelector.setVisible(false);
                 menu.setEnabled(true);
                 menu.setVisible(true);
                 roomSelector.getBackButton().setVisible(false);
-
             }
         };
         this.roomSelector.getBackButton().addActionListener(actionListener);
 
     }
+
+    //Getters and setters:
 
     public Menu getMenu() {
         return menu;

@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- *
+ * Clase que se encarga del manejo de los eventos de teclado.
  * @author Tomás y Carlos
  */
 public class KeyHandler implements KeyListener{
@@ -44,5 +44,14 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
+    }
+
+    public static void resetKeyStates(){
+        KT_W = false;
+        KT_A = false;
+        KT_S = false;
+        KT_D = false;
+        KP_R = false;
+        KP_ESC = false;
     }
 }

@@ -2,27 +2,28 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
-
 import static Handlers.Constants.*;
-import static javax.swing.BorderFactory.createEtchedBorder;
 
 /**
- *
+ * Clase que representa el menu de inicio del juego y contiene todos sus elementos.
  * @author Tomás y Carlos
  */
 public class Menu extends JPanel {
+
+    //Attributes:
 
     private JLabel backgroundLabel;
     private JButton playButton;
     private JButton quitButton;
 
-    /**
-     * Constructor clase Menu
-     */
+    //Constructors:
+
     public Menu(){
         createComponents();
         initComponents();
     }
+
+    //Methods:
 
     /**
      * Metodo que crea los componentes del menu
@@ -82,6 +83,8 @@ public class Menu extends JPanel {
         this.quitButton.setContentAreaFilled(false);
         this.add(this.quitButton);
     }
+
+    //Getters and setters:
 
     public JLabel getBackgroundLabel() {
         return backgroundLabel;

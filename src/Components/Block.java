@@ -1,19 +1,24 @@
 package Components;
 
+import Handlers.SoundHandler;
 import java.awt.*;
 
 /**
- *
+ * Clase que representa un bloque que puede ser movido.
  * @author Tomás y Carlos
  */
 public class Block extends Entity{
 
+    //Constructors:
     public Block(Point position, String path, Room room) {
         super(position, path, room);
     }
-    
+
+    //Methods:
+
     @Override
     public void update() {
+        updateAnimationTick();
         if(this.steps < 60 && this.state != 0){
             if(this.steps == 0){
                 GameObject collision = checkCollision();
@@ -23,7 +28,10 @@ public class Block extends Entity{
                     ((Block)collision).update();
                     if(((Block)collision).state != 0) move(3);
                     else resetState();
-                } else if(collision instanceof Tp) this.setPosition(((Tp) collision).next.position);
+                } else if(collision instanceof Tp) {
+                    SoundHandler.createClip(SoundHandler.get("Tp.wav")).start();
+                    this.setPosition(((Tp) collision).next.position);
+                }
                 else resetState();
             } else move(3);
         }else resetState();

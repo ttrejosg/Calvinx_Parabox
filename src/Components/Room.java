@@ -2,24 +2,32 @@ package Components;
 
 import Handlers.Constants;
 import Handlers.ImageHandler;
-import Handlers.KeyHandler;
-import Main.Game;
-import org.w3c.dom.css.Rect;
-
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.security.Key;
 import java.util.ArrayList;
-import static Handlers.Constants.*;
 
 /**
- *
+ * Clase que representa un escenario jugable.
+ * Una Room posee:
+ * Un entero 'id' que es el identificador.
+ * Un {@link ArrayList<Block>} 'blocks' que es una lista de bloques de la sala.
+ * Un {@link ArrayList<Wall>} 'walls' que es una lista de paredes de la sala.
+ * Un {@link ArrayList<ReleaseZone>} 'releaseZones' que es una lista de zonas de descargue de la sala.
+ * Un {@link ArrayList<Floor>} 'floor' que es una lista del suelo de la sala.
+ * Una {@link Door} 'door' que es la puerta objetivo del jugador.
+ * Un {@link Player} 'player' que es el personaje jugable.
+ * Un {@link Enemy} 'enemy' que es el enemigo de la sala.
+ * Un {@link File} 'file' que es el archivo de texto que describe la sala.
+ * Un {@link String} 'background' que es la ruta del recurso de imagen del fondo de la sala.
+ * Un {@link Tp} 'tp' que es un bloque de teletransporte.
  * @author Tomás y Carlos
  */
 public class Room {
+
+    //Attributes:
+
     private int id;
     private ArrayList<Block> blocks;
     private ArrayList<Wall> walls;
@@ -31,6 +39,8 @@ public class Room {
     private File roomFile;
     private String background;
     private Tp tp;
+
+    //Constructors:
 
     public Room(int id, File roomFile, Player player, Enemy enemy) {
         this.id = id;
@@ -44,6 +54,11 @@ public class Room {
         initRoom();
     }
 
+    //Methods:
+
+    /**
+     * Metodo que crea los componentes de la sala.
+     */
     private void createComponents() {
         this.blocks = new ArrayList<>();
         this.walls = new ArrayList<>();
@@ -51,6 +66,9 @@ public class Room {
         this.floor = new ArrayList<>();
     }
 
+    /**
+     * Metodo que inicia los componentes de la sala a partir del 'file'.
+     */
     public void initRoom(){
         try {
             FileReader fr = new FileReader(roomFile);
@@ -128,6 +146,9 @@ public class Room {
         }
     }
 
+    /**
+     * Metodo que restablece la sala a su estado original.
+     */
     public void reset(){
         this.blocks.clear();
         this.walls.clear();
@@ -137,28 +158,36 @@ public class Room {
         this.enemy.resetState();
         initRoom();
     }
-    
+
+    /**
+     * Metodo que hace el llamado al metodo update de cada entidad en la sala.
+     */
     public void update(){
         for(Block block: this.blocks) block.update();
         this.player.update();
         this.enemy.update();
     }
-    
+
+    /**
+     * Metodo que hace el llamado al metodo paint de cada objeto del juego en la sala.
+     * @param g El lapiz con el que se pintaran los objetos del juego.
+     */
     public void paint(Graphics g){
-        try{
-            g.drawImage(ImageHandler.get(this.background), 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, null);
-            for(Floor floor: this.floor) floor.paint(g);
-            for(Wall wall: this.walls) wall.paint(g);
-            for(ReleaseZone rz: this.releaseZones) rz.paint(g);
-            if(door != null) door.paint(g);
-            for(Block block: this.blocks) block.paint(g);
-            this.player.paint(g);
-            this.enemy.paint(g);
-        }catch (Exception e){
-            System.out.println("Error de libreria");
-        }
+        g.drawImage(ImageHandler.get(this.background), 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, null);
+        for(Floor floor: this.floor) floor.paint(g);
+        for(Wall wall: this.walls) wall.paint(g);
+        for(ReleaseZone rz: this.releaseZones) rz.paint(g);
+        if(door != null) door.paint(g);
+        for(Block block: this.blocks) block.paint(g);
+        this.player.paint(g);
+        this.enemy.paint(g);
     }
 
+    /**
+     * Metodo que busca en la sala un objeto cuya collisionBox se intersecte con la collisionBox dada.
+     * @param collisionBox area ocupada por la entidad a verificar.
+     * @return null si no encuentra el objeto, de lo contrario retorna el objeto cuya collisionBox intersecta con la dada.
+     */
     public GameObject intersects(Rectangle collisionBox){
         GameObject gObject = null;
         int i = 0;
@@ -180,110 +209,62 @@ public class Room {
         return gObject;
     }
 
-    /**
-     * @return the id
-     */
+    //Getters and setters:
+
     public int getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(int id) {
         this.id = id;
     }
 
-    /**
-     * @return the blocks
-     */
     public ArrayList<Block> getBlocks() {
         return blocks;
     }
 
-    /**
-     * @param blocks the blocks to set
-     */
     public void setBlocks(ArrayList<Block> blocks) {
         this.blocks = blocks;
     }
 
-    /**
-     * @return the walls
-     */
     public ArrayList<Wall> getWalls() {
         return walls;
     }
 
-    /**
-     * @param walls the walls to set
-     */
     public void setWalls(ArrayList<Wall> walls) {
         this.walls = walls;
     }
 
-    /**
-     * @return the releaseZones
-     */
     public ArrayList<ReleaseZone> getReleaseZones() {
         return releaseZones;
     }
 
-    /**
-     * @param releaseZones the releaseZones to set
-     */
     public void setReleaseZones(ArrayList<ReleaseZone> releaseZones) {
         this.releaseZones = releaseZones;
     }
 
-    /**
-     * @return the door
-     */
+    public ArrayList<Floor> getFloor() {
+        return floor;
+    }
+
+    public void setFloor(ArrayList<Floor> floor) {
+        this.floor = floor;
+    }
+
     public Door getDoor() {
         return door;
     }
 
-    /**
-     * @param door the door to set
-     */
     public void setDoor(Door door) {
         this.door = door;
     }
 
-    /**
-     * @return the player
-     */
     public Player getPlayer() {
         return player;
     }
 
-    /**
-     * @param player the player to set
-     */
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    /**
-     * @return the background
-     */
-    public String getBackground() {
-        return background;
-    }
-
-    /**
-     * @param background the background to set
-     */
-    public void setBackground(String background) {
-        this.background = background;
-    }
-
-    public File getRoomFile() {
-        return roomFile;
-    }
-
-    public void setRoomFile(File roomFile) {
-        this.roomFile = roomFile;
     }
 
     public Enemy getEnemy() {
@@ -294,12 +275,20 @@ public class Room {
         this.enemy = enemy;
     }
 
-    public ArrayList<Floor> getFloor() {
-        return floor;
+    public File getRoomFile() {
+        return roomFile;
     }
 
-    public void setFloor(ArrayList<Floor> floor) {
-        this.floor = floor;
+    public void setRoomFile(File roomFile) {
+        this.roomFile = roomFile;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public Tp getTp() {

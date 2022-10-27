@@ -1,27 +1,29 @@
 package GUI;
 
-import Components.Room;
-import Main.Game;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import static Handlers.Constants.*;
 
 /**
- *
+ * Clase que reprenta el panel de seleccion de salas jugables.
  * @author Tomás y Carlos
  */
 public class RoomSelector extends JPanel {
 
+    //Attributes:
+
     private JButton backButton;
     private JButton[] roomButtons;
     private JLabel backgroundLabel;
+
+    //Constructor:
+
     public RoomSelector(){
         initComponents();
     }
+
+    //Methods:
 
     /**
      * Inicializa los componentes de RoomSelector

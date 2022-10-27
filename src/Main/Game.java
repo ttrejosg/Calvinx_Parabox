@@ -4,31 +4,32 @@ import Components.*;
 import Handlers.*;
 import java.awt.Point;
 import static Handlers.Constants.*;
+import static javax.sound.sampled.Clip.LOOP_CONTINUOUSLY;
 
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.security.Key;
-import java.util.ArrayList;
 
 /**
+ * Clase que representa el juego y contiene todos sus elementos y componentes.
+ * El juego posee:
+ * Una {@link GameWindow} 'gWindow' que es la ventana donde se ejecuta el hilo del juego.
+ * Un {@link GamePanel} 'gPanel' que es el panel sobre el cual se renderiza el juego.
+ * Un booleano 'playing' el cual indica si el juego está en ejecución.
+ * Un {@link Thread} 'gameThread' que es el hilo donde se ejecuta el juego.
+ * Un {@link File[]} 'roomFiles' que es una lista con los archivos de texto que describen las salas jugables.
+ * Un {@link Room} 'currentRoom' que es la sala en la que se está jugando.
  *
- * @author Tomás
+ * @author Tomás y Carlos
  */
 public class Game implements Runnable{
     private GameWindow gWindow;
     private GamePanel gPanel;
     private boolean playing;
     private Thread gameThread;
-
     private File[] roomFiles;
-    private Room CurrentRoom;
-
-    private final int FPS_SET = 120;
-    private final int UPS_SET = 200;
-    private final boolean SHOW_FPS_UPS = true;
+    private Room currentRoom;
 
     /**
      * Constructor de la clase Game
@@ -59,8 +60,7 @@ public class Game implements Runnable{
         this.gPanel.setEnabled(false);
         LoadRoomFiles();
         initRoomSelectorActionListeners();
-        Clip clip = SoundHandler.createClip(SoundHandler.get("Patricks_Parabox.wav"));
-        clip.start();
+        SoundHandler.createClip(SoundHandler.get("Multi_Infinite.wav")).loop(LOOP_CONTINUOUSLY);
         this.gWindow.setVisible(true);
     }
 
@@ -81,10 +81,9 @@ public class Game implements Runnable{
             roomButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    CurrentRoom = new Room(finalI,roomFiles[finalI]
-                            ,new Player(new Point(0, 0),null), new Enemy(new Point(0,0),null));
-                    Clip clip = SoundHandler.createClip(SoundHandler.get("Room_Select.wav"));
-                    clip.start();
+                    currentRoom = new Room(finalI,roomFiles[finalI]
+                            ,new Player(new Point(0, 0),null), new Enemy(new Point(-60,-60),null));
+                    SoundHandler.createClip(SoundHandler.get("Room_Select.wav")).start();
                     initGameThread();
                 }
             });
@@ -116,16 +115,13 @@ public class Game implements Runnable{
         long previousTime = System.nanoTime();
         int frames = 0;
         int updates = 0;
-        long lastCheck = System.currentTimeMillis();
         double deltaU = 0;
         double deltaF = 0;
-
         while (playing){
             long currentTime = System.nanoTime();
             deltaU += (currentTime - previousTime) / timePerUpdate;
             deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;
-
             if(deltaU >= 1){
                 update();
                 updates++;
@@ -136,67 +132,71 @@ public class Game implements Runnable{
                 frames++;
                 deltaF--;
             }
-            if(SHOW_FPS_UPS){
-                if(System.currentTimeMillis() - lastCheck >= 1000){
-                    lastCheck = System.currentTimeMillis();
-                    System.out.println("FPS: " + frames + " | UPS: " + updates);
-                    frames = 0;
-                    updates = 0;
-                }
-            }
         }
         if(KeyHandler.KP_R) resetRoom();
     }
     
     /**
-     * Método que actualiza los componentes del juego.
+     * Método que actualiza el estado del juego y la sala jugable.
      */
     public void update(){
-        this.CurrentRoom.update();
+        this.currentRoom.update();
         if(KeyHandler.KP_R) this.playing = false;
         else if(KeyHandler.KP_ESC) pause();
         else if(win()) {
-            Clip clip = SoundHandler.createClip(SoundHandler.get("Win.wav"));
-            clip.start();
+            SoundHandler.createClip(SoundHandler.get("Win.wav")).start();
             returnRoomSelector();
         }
     }
 
+    /**
+     * Metodo que determina si se ha cumplido el objetivo en la sala.
+     * @return true si el jugador gana, de lo contrario false.
+     */
     public boolean win(){
-        for(ReleaseZone rs: this.CurrentRoom.getReleaseZones()){
+        for(ReleaseZone rs: this.currentRoom.getReleaseZones()){
             boolean ocupated = false;
-            for(Block b: this.CurrentRoom.getBlocks()){
+            for(Block b: this.currentRoom.getBlocks()){
                 if(b.getPosition().x == rs.getPosition().x && b.getPosition().y == rs.getPosition().y){
                     ocupated = true;
                 }
             }
             if(!ocupated) return false;
         }
-        Player p = this.CurrentRoom.getPlayer();
-        Door d = this.CurrentRoom.getDoor();
+        Player p = this.currentRoom.getPlayer();
+        Door d = this.currentRoom.getDoor();
         return p.getPosition().x == d.getPosition().x && p.getPosition().y == d.getPosition().y;
     }
 
+    /**
+     * Metodo que termina el hilo del juego y lo deja en estado de pausa.
+     */
     public void pause(){
-        Clip clip = SoundHandler.createClip(SoundHandler.get("Pause.wav"));
-        clip.start();
-        this.CurrentRoom.setBackground(PAUSE_BACKGROUND_PATH);
+        SoundHandler.createClip(SoundHandler.get("Pause.wav")).start();
+        this.currentRoom.setBackground(PAUSE_BACKGROUND_PATH);
         this.gPanel.getExit().setVisible(true);
         this.gPanel.getBackToMenuButton().setVisible(true);
         this.gPanel.getResumeButton().setVisible(true);
-        playing = false;
+        this.gPanel.getResumeButton().requestFocus();
+        this.gPanel.getResumeButton().setFocusable(true);
         KeyHandler.KP_ESC = false;
+        playing = false;
     }
 
+    /**
+     * Metodo que restablece la sala en la que se está jugando actualmente.
+     */
     public void resetRoom(){
-        Clip clip = SoundHandler.createClip(SoundHandler.get("Reset.wav"));
-        clip.start();
-        this.CurrentRoom.reset();
+        SoundHandler.createClip(SoundHandler.get("Reset.wav")).start();
+        this.currentRoom.reset();
         this.playing = true;
         KeyHandler.KP_R = false;
         this.gameThread.run();
     }
 
+    /**
+     * Metodo que retorna al selector de niveles.
+     */
     public void returnRoomSelector(){
         try {
             Thread.sleep(800);
@@ -209,70 +209,57 @@ public class Game implements Runnable{
         this.playing = false;
         this.gPanel.setEnabled(false);
         this.gPanel.setVisible(false);
-        this.CurrentRoom.initRoom();
+        this.currentRoom.initRoom();
     }
 
-    /**
-     * @return the gWindow
-     */
+    //Getters and setters:
+
     public GameWindow getgWindow() {
         return gWindow;
     }
 
-    /**
-     * @param gWindow the gWindow to set
-     */
     public void setgWindow(GameWindow gWindow) {
         this.gWindow = gWindow;
     }
 
-    /**
-     * @return the gPanel
-     */
     public GamePanel getgPanel() {
         return gPanel;
     }
 
-    /**
-     * @param gPanel the gPanel to set
-     */
     public void setgPanel(GamePanel gPanel) {
         this.gPanel = gPanel;
     }
 
-    /**
-     * @return the playing
-     */
     public boolean isPlaying() {
         return playing;
     }
 
-    /**
-     * @param playing the playing to set
-     */
     public void setPlaying(boolean playing) {
         this.playing = playing;
     }
 
-    /**
-     * @return the gameThread
-     */
     public Thread getGameThread() {
         return gameThread;
     }
 
-    /**
-     * @param gameThread the gameThread to set
-     */
     public void setGameThread(Thread gameThread) {
         this.gameThread = gameThread;
     }
 
+    public File[] getRoomFiles() {
+        return roomFiles;
+    }
+
+    public void setRoomFiles(File[] roomFiles) {
+        this.roomFiles = roomFiles;
+    }
+
     public Room getCurrentRoom() {
-        return CurrentRoom;
+        return currentRoom;
     }
 
     public void setCurrentRoom(Room currentRoom) {
-        CurrentRoom = currentRoom;
+        this.currentRoom = currentRoom;
     }
+
 }

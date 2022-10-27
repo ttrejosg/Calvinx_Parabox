@@ -1,35 +1,27 @@
 package Components;
 
-import Handlers.Constants;
 import Handlers.KeyHandler;
 import Handlers.SoundHandler;
-
-import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.imageio.ImageIO;
-import javax.sound.sampled.Clip;
 
-import static Handlers.Constants.*;
 
 /**
- *
- * @author Tomás
+ * Clase que representa al personaje jugable.
+ * @author Tomás y Carlos
  */
 public class Player extends Entity{
+
+    //Constructors:
 
     public Player(Point position, Room room) {
         super(position, "player_sprites.png", room);
     }
 
-    /**
-     * Método que se encarga de actualizar la posición del jugador gradualmente de acuerdo a los pasos  que haya dado
-     * y la tecla que haya oprimido el jugador.
-     */
+    //Methods:
+
     @Override
     public void update() {
+        updateAnimationTick();
         if(this.state == 0) updateState();
         else if(this.steps < 60){
             if(this.steps == 0){
@@ -40,13 +32,18 @@ public class Player extends Entity{
                     ((Block)collision).update();
                     if(((Block)collision).state != 0) move(3);
                     else resetState();
-                } else if(collision instanceof Tp) this.setPosition(((Tp) collision).next.position);
-                else if (collision instanceof Enemy) KeyHandler.KP_R = true;
+                } else if(collision instanceof Tp) {
+                    SoundHandler.createClip(SoundHandler.get("Tp.wav")).start();
+                    this.setPosition(((Tp) collision).next.position);
+                } else if (collision instanceof Enemy) KeyHandler.KP_R = true;
                 else resetState();
             } else move(3);
         } else resetState();
     }
 
+    /**
+     * Metodo que actualiza el estado del jugador segun la tecla presionada.
+     */
     public void updateState(){
         if(KeyHandler.KT_W) this.state = 1;
         else if(KeyHandler.KT_D) this.state = 2;

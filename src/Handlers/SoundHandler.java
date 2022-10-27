@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import javax.sound.sampled.*;
 
 /**
- *
+ * Clase que se encarga del manejo de los archivos de audio.
  * @author Tomás y Carlos
  */
 public class SoundHandler {
     
     public static ArrayList<File> sounds = new ArrayList<>();
-    
     private SoundHandler(){
     }
     
